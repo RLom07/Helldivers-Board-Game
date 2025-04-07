@@ -1,5 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://bxsuxpyvjt170"]
+[gd_scene load_steps=3 format=3 uid="uid://bxsuxpyvjt170"]
 
+[ext_resource type="Script" path="res://scenes/intro/introScreen.gd" id="1_3g3qy"]
 [ext_resource type="VideoStream" path="res://assets/video's/algemeen/placeholdervideo.ogv" id="1_8w8bb"]
 
 [node name="IntroScreen" type="Node2D"]
@@ -9,6 +10,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+script = ExtResource("1_3g3qy")
 
 [node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="Control"]
 layout_mode = 0
@@ -18,7 +20,18 @@ stream = ExtResource("1_8w8bb")
 autoplay = true
 expand = true
 
-[node name="Label" type="Label" parent="Control"]
+[node name="SkipLabel" type="Label" parent="Control"]
+visible = false
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
+offset_left = 787.0
+offset_top = 585.0
+offset_right = 1144.0
+offset_bottom = 640.0
+theme_override_font_sizes/font_size = 40
+text = "Press Enter to skip"
+vertical_alignment = 2
+
+[node name="BlinkTimer" type="Timer" parent="Control"]
+wait_time = 0.5
+
+[connection signal="timeout" from="Control/BlinkTimer" to="Control" method="_on_blink_timer_timeout"]
