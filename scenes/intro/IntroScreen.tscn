@@ -14,8 +14,8 @@ script = ExtResource("1_3g3qy")
 
 [node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="Control"]
 layout_mode = 0
-offset_right = 1153.0
-offset_bottom = 648.0
+offset_right = 1920.0
+offset_bottom = 1080.0
 stream = ExtResource("1_8w8bb")
 autoplay = true
 expand = true

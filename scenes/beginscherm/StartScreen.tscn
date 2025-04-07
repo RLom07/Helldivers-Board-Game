@@ -1,3 +1,24 @@
-[gd_scene format=3 uid="uid://cbwlu1usr8jqr"]
+[gd_scene load_steps=3 format=3 uid="uid://cbwlu1usr8jqr"]
+
+[ext_resource type="Texture2D" uid="uid://bwumrpw57eurj" path="res://assets/images/menu/menu.jpg" id="1_xelfu"]
+[ext_resource type="AudioStream" uid="uid://cscwkhchddxm7" path="res://assets/music/algemeen/athem.wav" id="2_1smls"]
 
 [node name="StartScreen" type="Node2D"]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureRect" type="TextureRect" parent="Control"]
+layout_mode = 0
+offset_top = 1.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = ExtResource("1_xelfu")
+expand_mode = 1
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Control"]
+stream = ExtResource("2_1smls")
+autoplay = true
