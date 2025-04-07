@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3 uid="uid://bxsuxpyvjt170"]
+
+[ext_resource type="VideoStream" path="res://assets/video's/algemeen/placeholdervideo.ogv" id="1_8w8bb"]
+
+[node name="IntroScreen" type="Node2D"]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="Control"]
+layout_mode = 0
+offset_right = 1153.0
+offset_bottom = 648.0
+stream = ExtResource("1_8w8bb")
+autoplay = true
+expand = true
+
+[node name="Label" type="Label" parent="Control"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
