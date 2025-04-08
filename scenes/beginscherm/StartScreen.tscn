@@ -1,5 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://cbwlu1usr8jqr"]
+[gd_scene load_steps=4 format=3 uid="uid://cbwlu1usr8jqr"]
 
+[ext_resource type="Script" path="res://scenes/beginscherm/StartScreenControl.gd" id="1_mhqs2"]
 [ext_resource type="Texture2D" uid="uid://bwumrpw57eurj" path="res://assets/images/menu/menu.jpg" id="1_xelfu"]
 [ext_resource type="AudioStream" uid="uid://cscwkhchddxm7" path="res://assets/music/algemeen/athem.wav" id="2_1smls"]
 
@@ -10,6 +11,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+script = ExtResource("1_mhqs2")
 
 [node name="TextureRect" type="TextureRect" parent="Control"]
 layout_mode = 0
