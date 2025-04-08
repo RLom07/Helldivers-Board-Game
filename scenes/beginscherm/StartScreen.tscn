@@ -1,8 +1,44 @@
-[gd_scene load_steps=4 format=3 uid="uid://cbwlu1usr8jqr"]
+[gd_scene load_steps=7 format=3 uid="uid://cbwlu1usr8jqr"]
 
 [ext_resource type="Script" path="res://scenes/beginscherm/StartScreenControl.gd" id="1_mhqs2"]
 [ext_resource type="Texture2D" uid="uid://bwumrpw57eurj" path="res://assets/images/menu/menu.jpg" id="1_xelfu"]
 [ext_resource type="AudioStream" uid="uid://cscwkhchddxm7" path="res://assets/music/algemeen/athem.wav" id="2_1smls"]
+
+[sub_resource type="Animation" id="Animation_g4dsr"]
+resource_name = "fade_out"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("FadeRect:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 0), Color(0, 0, 0, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_lw80y"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("FadeRect:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0, 0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_0c1jo"]
+_data = {
+"RESET": SubResource("Animation_lw80y"),
+"fade_out": SubResource("Animation_g4dsr")
+}
 
 [node name="StartScreen" type="Node2D"]
 
@@ -21,6 +57,28 @@ offset_bottom = 1080.0
 texture = ExtResource("1_xelfu")
 expand_mode = 1
 
+[node name="Label" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = 701.0
+offset_top = 945.0
+offset_right = 1264.0
+offset_bottom = 1041.0
+theme_override_font_sizes/font_size = 70
+text = "Click to continue"
+
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Control"]
 stream = ExtResource("2_1smls")
 autoplay = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Control"]
+libraries = {
+"": SubResource("AnimationLibrary_0c1jo")
+}
+
+[node name="FadeRect" type="ColorRect" parent="Control"]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1104.0
+mouse_filter = 2
+mouse_force_pass_scroll_events = false
+color = Color(0, 0, 0, 0)

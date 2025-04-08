@@ -1,3 +1,39 @@
-[gd_scene format=3 uid="uid://coirp6140737w"]
+[gd_scene load_steps=3 format=3 uid="uid://coirp6140737w"]
+
+[ext_resource type="Script" path="res://scenes/menu/Menu.gd" id="1_rh4o2"]
+[ext_resource type="Texture2D" uid="uid://bh6vaqeyxicl7" path="res://assets/images/menu/1357877.png" id="2_56ubh"]
 
 [node name="Menu" type="Node2D"]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_rh4o2")
+
+[node name="TextureRect" type="TextureRect" parent="Control"]
+layout_mode = 0
+offset_right = 1919.0
+offset_bottom = 1080.0
+texture = ExtResource("2_56ubh")
+expand_mode = 1
+
+[node name="MainGameButton" type="Button" parent="Control"]
+layout_mode = 2
+offset_left = 763.0
+offset_top = 471.0
+offset_right = 1114.0
+offset_bottom = 534.0
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 40
+text = "Main Game"
+
+[node name="TutorialButton" type="Button" parent="Control"]
+layout_mode = 2
+offset_left = 763.0
+offset_top = 581.0
+offset_right = 1114.0
+offset_bottom = 644.0
+theme_override_font_sizes/font_size = 40
+text = "Tutorial"
