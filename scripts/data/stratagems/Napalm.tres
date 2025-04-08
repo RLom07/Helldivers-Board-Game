@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Stratagem" load_steps=3 format=3 uid="uid://byknjc6en15ou"]
+
+[ext_resource type="Texture2D" uid="uid://ctm5kh0pbcrqd" path="res://assets/images/stratagems/Orbital_Napalm_Barrage_Stratagem_Icon.png" id="1_86dlc"]
+[ext_resource type="Script" path="res://scripts/data/Stratagem.gd" id="1_j7aco"]
+
+[resource]
+script = ExtResource("1_j7aco")
+name = "Orbital Napalm Barage"
+description = "Ignites a large area in flames"
+cooldown = 3
+icon = ExtResource("1_86dlc")
+type = "Napalm"
+range = 2

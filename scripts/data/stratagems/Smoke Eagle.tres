@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Stratagem" load_steps=3 format=3 uid="uid://hste63hvkxr6"]
+
+[ext_resource type="Texture2D" uid="uid://danbo21jxehgv" path="res://assets/images/stratagems/Eagle_Smoke_Strike_Stratagem_Icon (1).png" id="1_1u65k"]
+[ext_resource type="Script" path="res://scripts/data/Stratagem.gd" id="1_b7r0q"]
+
+[resource]
+script = ExtResource("1_b7r0q")
+name = "Smoke Eagle "
+description = "Ship drops smoke granade blinding the enemy making it skip a turn"
+cooldown = 2
+icon = ExtResource("1_1u65k")
+type = "smoke"
+range = 1

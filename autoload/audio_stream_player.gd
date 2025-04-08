@@ -2,7 +2,8 @@ extends AudioStreamPlayer
 
 var scenes_with_music := [
 	"res://scenes/beginscherm/StartScreen.tscn",
-	"res://scenes/menu/menu.tscn"
+	"res://scenes/menu/menu.tscn",
+	"res://scenes/player_select/PlayerSelect.tscn"
 ]
 
 var last_scene_path := ""
