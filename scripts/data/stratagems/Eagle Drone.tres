@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Stratagem" load_steps=3 format=3 uid="uid://c0xtu61d21c1g"]
+
+[ext_resource type="Texture2D" uid="uid://dl7xo3obf4n2j" path="res://assets/images/stratagems/Eagle Drone.png" id="1_gymyd"]
+[ext_resource type="Script" path="res://scripts/data/Stratagem.gd" id="1_ki0cy"]
+
+[resource]
+script = ExtResource("1_ki0cy")
+name = "Eagle Drone"
+description = "Scans the Area, let's you look 3 spots ahead"
+cooldown = 2
+damage = 0
+icon = ExtResource("1_gymyd")
+type = "scan"
+range = 3

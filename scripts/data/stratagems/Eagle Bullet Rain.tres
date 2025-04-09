@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Stratagem" load_steps=3 format=3 uid="uid://w4bnh2djso82"]
+
+[ext_resource type="Texture2D" uid="uid://crgickek3bgqj" path="res://assets/images/stratagems/Eagle-Bulletrein.jpg" id="1_cmeif"]
+[ext_resource type="Script" path="res://scripts/data/Stratagem.gd" id="1_td2wp"]
+
+[resource]
+script = ExtResource("1_td2wp")
+name = "Eagle Bullet Rain"
+description = "Shoots a bullet rain 3 blocks in front of you"
+cooldown = 3
+damage = 10
+icon = ExtResource("1_cmeif")
+type = "bullet"
+range = 3

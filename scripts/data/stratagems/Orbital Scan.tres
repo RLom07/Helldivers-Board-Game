@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Stratagem" load_steps=3 format=3 uid="uid://ctvr62jawg0sy"]
+
+[ext_resource type="Script" path="res://scripts/data/Stratagem.gd" id="1_bnyxg"]
+[ext_resource type="Texture2D" uid="uid://cn7e6hfjmg34j" path="res://assets/images/stratagems/Orbital-Scan.jpg" id="1_dl1s3"]
+
+[resource]
+script = ExtResource("1_bnyxg")
+name = "Orbital Scan"
+description = "Makes you able to see 7 blocks ahead"
+cooldown = 5
+damage = 0
+icon = ExtResource("1_dl1s3")
+type = "scan"
+range = 7

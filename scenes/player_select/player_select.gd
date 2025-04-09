@@ -9,49 +9,61 @@ const PlayerSelectPanel = preload("res://scenes/ui/PlayerSelectPanel.gd")
 @onready var add_button_2 = $MarginContainer/VBoxContainer/PlayerRow/Addbutton2
 @onready var add_button_3 = $MarginContainer/VBoxContainer/PlayerRow/Addbutton3
 
-var all_stratagems = [
+var all_stratagems: Array[Stratagem] = [
 	preload("res://scripts/data/stratagems/Napalm.tres"),
 	preload("res://scripts/data/stratagems/Orbital Barage.tres"),
 	preload("res://scripts/data/stratagems/Napalm Eagle.tres"),
-	preload("res://scripts/data/stratagems/Smoke Eagle.tres")
+	preload("res://scripts/data/stratagems/Smoke Eagle.tres"),
+	preload("res://scripts/data/stratagems/Orbital Scan.tres"),
+	preload("res://scripts/data/stratagems/Eagle Bullet Rain.tres"),
+	preload("res://scripts/data/stratagems/Eagle Drone.tres"),
+	preload("res://scripts/data/stratagems/Orbital Nuke.tres")
 ]
 
-var current_player_count := 1
+var current_player_count := 0
 const MAX_PLAYERS := 4
 
 func _ready():
-	# Hook up plus buttons
-	add_button_1.pressed.connect(func(): _add_player_at_index(1))
-	add_button_2.pressed.connect(func(): _add_player_at_index(2))
-	add_button_3.pressed.connect(func(): _add_player_at_index(3))
+	add_button_1.pressed.connect(func(): _add_player_panel(add_button_1))
+	add_button_2.pressed.connect(func(): _add_player_panel(add_button_2))
+	add_button_3.pressed.connect(func(): _add_player_panel(add_button_3))
 
 	confirm_button.pressed.connect(_on_confirm_pressed)
+
+	# Add the first player panel by default
+	_add_player_panel(null)
 
 func _create_player_panel() -> Control:
 	var panel_scene = preload("res://scenes/ui/PlayerSelectPanel.tscn")
 	var panel = panel_scene.instantiate()
 
-	if "all_stratagems" in panel:
-		panel.set("all_stratagems", all_stratagems)
+	if panel.has_method("set_all_stratagems"):
+		panel.set_all_stratagems(all_stratagems)
 	else:
-		print("⚠️ Panel does not have 'all_stratagems'")
+		print("⚠️ Panel does not have 'set_all_stratagems' method")
 
 	return panel
 
-
-func _add_player_at_index(index: int):
+func _add_player_panel(trigger_button: Button):
 	if current_player_count >= MAX_PLAYERS:
-		print("⚠️ Max players already added.")
+		print("⚠️ Max players reached.")
 		return
 
-	# Remove the button at that index and replace with a panel
-	var button = player_row.get_child(index)
-	player_row.remove_child(button)
-	button.queue_free()
+	if trigger_button != null:
+		trigger_button.queue_free()  # Remove the clicked button
 
 	var panel = _create_player_panel()
+
+	# Always insert before the remaining add buttons
+	var insert_index := player_row.get_child_count()
+	for i in range(player_row.get_child_count()):
+		var child = player_row.get_child(i)
+		if child is Button:
+			insert_index = i
+			break
+
 	player_row.add_child(panel)
-	player_row.move_child(panel, index)
+	player_row.move_child(panel, insert_index)
 
 	current_player_count += 1
 

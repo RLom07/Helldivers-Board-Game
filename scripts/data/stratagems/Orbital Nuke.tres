@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Stratagem" load_steps=3 format=3 uid="uid://b60p3utxmv14v"]
+
+[ext_resource type="Texture2D" uid="uid://fyaac2tqbq0y" path="res://assets/images/stratagems/Orbital-Nuke.jpg" id="1_j2ci7"]
+[ext_resource type="Script" path="res://scripts/data/Stratagem.gd" id="1_vy3jd"]
+
+[resource]
+script = ExtResource("1_vy3jd")
+name = "Orbital Nuke"
+description = "A huge blast with a range of 3 spots to the forward and backward"
+cooldown = 5
+damage = 50
+icon = ExtResource("1_j2ci7")
+type = "explosive"
+range = 5

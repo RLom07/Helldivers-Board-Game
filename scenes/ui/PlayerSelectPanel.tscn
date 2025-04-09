@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://c660rur1vyob5"]
+[gd_scene load_steps=3 format=3 uid="uid://c660rur1vyob5"]
 
 [ext_resource type="Script" path="res://scenes/ui/PlayerSelectPanel.gd" id="1_6c7s4"]
 [ext_resource type="Texture2D" uid="uid://doyw1x000mfn3" path="res://assets/images/stratagems/Rectangle 44.png" id="1_ld2n6"]
-[ext_resource type="Texture2D" uid="uid://ctm5kh0pbcrqd" path="res://assets/images/stratagems/Orbital_Napalm_Barrage_Stratagem_Icon.png" id="2_fqgpj"]
 
 [node name="PlayerSelectPanel" type="VBoxContainer"]
 offset_left = 40.0
@@ -49,38 +48,6 @@ offset_top = 228.0
 offset_right = 428.0
 offset_bottom = 360.0
 columns = 4
-
-[node name="stratagem" type="Button" parent="TextureRect/StratagemGrid"]
-layout_mode = 2
-theme_override_icons/icon = ExtResource("2_fqgpj")
-
-[node name="stratagem2" type="Button" parent="TextureRect/StratagemGrid"]
-layout_mode = 2
-theme_override_icons/icon = ExtResource("2_fqgpj")
-
-[node name="stratagem3" type="Button" parent="TextureRect/StratagemGrid"]
-layout_mode = 2
-theme_override_icons/icon = ExtResource("2_fqgpj")
-
-[node name="stratagem4" type="Button" parent="TextureRect/StratagemGrid"]
-layout_mode = 2
-theme_override_icons/icon = ExtResource("2_fqgpj")
-
-[node name="stratagem5" type="Button" parent="TextureRect/StratagemGrid"]
-layout_mode = 2
-theme_override_icons/icon = ExtResource("2_fqgpj")
-
-[node name="stratagem6" type="Button" parent="TextureRect/StratagemGrid"]
-layout_mode = 2
-theme_override_icons/icon = ExtResource("2_fqgpj")
-
-[node name="stratagem7" type="Button" parent="TextureRect/StratagemGrid"]
-layout_mode = 2
-theme_override_icons/icon = ExtResource("2_fqgpj")
-
-[node name="stratagem8" type="Button" parent="TextureRect/StratagemGrid"]
-layout_mode = 2
-theme_override_icons/icon = ExtResource("2_fqgpj")
 
 [node name="SelectedLabel" type="Label" parent="TextureRect"]
 layout_mode = 2

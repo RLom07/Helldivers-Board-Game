@@ -8,6 +8,7 @@ script = ExtResource("1_rib6j")
 name = "Orbital Barage"
 description = "Shoots a barage of explotions from the orbit"
 cooldown = 2
+damage = 20
 icon = ExtResource("1_g8jfm")
 type = "explosion"
 range = 3

@@ -8,6 +8,7 @@ script = ExtResource("1_uviux")
 name = "Napalm Eagle"
 description = "Ship flies over a drops a load of Napalm bombs in top of it's target"
 cooldown = 1
+damage = 30
 icon = ExtResource("1_hsbhw")
 type = "Napalm"
 range = 1
