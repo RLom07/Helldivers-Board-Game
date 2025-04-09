@@ -1,0 +1,145 @@
+[gd_scene load_steps=9 format=3 uid="uid://dduuuwxn40enh"]
+
+[ext_resource type="Texture2D" uid="uid://thhyjh11gseg" path="res://assets/images/game/Automaton Background.png" id="1_j0bc4"]
+[ext_resource type="Script" path="res://scenes/game/game.gd" id="1_uor0w"]
+[ext_resource type="Texture2D" uid="uid://dh73ue1ffoem1" path="res://assets/images/game/board.png" id="2_v8g18"]
+[ext_resource type="Texture2D" uid="uid://bsmctangikr48" path="res://assets/images/game/automaton logo.png" id="3_r6tge"]
+[ext_resource type="Texture2D" uid="uid://doyw1x000mfn3" path="res://assets/images/stratagems/Rectangle 44.png" id="4_7q5p8"]
+[ext_resource type="AudioStream" uid="uid://bem0lkt2hjfi" path="res://assets/music/automatons/Wilbert-Roget_-II-The-Automaton-Legion-Helldivers-2-_Original-Game-Soundtrack_.wav" id="4_g4w8s"]
+[ext_resource type="Texture2D" uid="uid://c7ekvvosl645r" path="res://assets/images/game/Emergency_Evacuation_Mission_Icon.png" id="5_43qlu"]
+[ext_resource type="Texture2D" uid="uid://idi528cf7qqb" path="res://assets/images/game/Extraction_Zone_Icon.webp" id="6_pgx45"]
+
+[node name="Game" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_uor0w")
+
+[node name="background" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = ExtResource("1_j0bc4")
+
+[node name="Board" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 270.0
+offset_top = 181.0
+offset_right = 1363.0
+offset_bottom = 903.0
+texture = ExtResource("2_v8g18")
+
+[node name="logo" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 1445.0
+offset_top = 284.0
+offset_right = 1853.0
+offset_bottom = 692.0
+texture = ExtResource("3_r6tge")
+
+[node name="Rectangle" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 1402.0
+offset_top = -3.0
+offset_right = 1932.0
+offset_bottom = 286.0
+texture = ExtResource("4_7q5p8")
+expand_mode = 1
+
+[node name="missionicon" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 1435.0
+offset_top = 93.0
+offset_right = 1506.0
+offset_bottom = 164.0
+texture = ExtResource("5_43qlu")
+expand_mode = 1
+
+[node name="missionlabel" type="Label" parent="background"]
+layout_mode = 0
+offset_left = 1512.0
+offset_top = 112.0
+offset_right = 1878.0
+offset_bottom = 142.0
+theme_override_font_sizes/font_size = 22
+text = "Evacuate Super Citizens off the planet"
+
+[node name="extractionicon" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 1431.0
+offset_top = 186.0
+offset_right = 1506.0
+offset_bottom = 261.0
+texture = ExtResource("6_pgx45")
+expand_mode = 1
+
+[node name="extractionlabel" type="Label" parent="background"]
+layout_mode = 0
+offset_left = 1512.0
+offset_top = 209.0
+offset_right = 1807.0
+offset_bottom = 239.0
+theme_override_font_sizes/font_size = 22
+text = "Extract savely with your squad"
+
+[node name="objectivelabel" type="Label" parent="background"]
+layout_mode = 0
+offset_left = 1539.0
+offset_top = 13.0
+offset_right = 1802.0
+offset_bottom = 55.0
+theme_override_font_sizes/font_size = 30
+text = "Mission Objective:"
+
+[node name="PlayerList" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 66.0
+offset_bottom = 104.0
+
+[node name="PlayerName1" type="Label" parent="PlayerList"]
+layout_mode = 2
+
+[node name="PlayerName2" type="Label" parent="PlayerList"]
+layout_mode = 2
+
+[node name="PlayerName3" type="Label" parent="PlayerList"]
+layout_mode = 2
+
+[node name="PlayerName4" type="Label" parent="PlayerList"]
+layout_mode = 2
+
+[node name="StratagemDisplay" type="GridContainer" parent="."]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 153.0
+offset_right = 24.0
+offset_bottom = 338.0
+
+[node name="Stratagem1" type="TextureButton" parent="StratagemDisplay"]
+layout_mode = 2
+
+[node name="Stratagem2" type="TextureButton" parent="StratagemDisplay"]
+layout_mode = 2
+
+[node name="Stratagem3" type="TextureButton" parent="StratagemDisplay"]
+layout_mode = 2
+
+[node name="Stratagem4" type="TextureButton" parent="StratagemDisplay"]
+layout_mode = 2
+
+[node name="TurnLabel" type="Label" parent="."]
+layout_mode = 0
+offset_top = 463.0
+offset_right = 40.0
+offset_bottom = 497.0
+
+[node name="NextTurnButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 502.0
+offset_right = 109.0
+offset_bottom = 533.0
+text = "Next Player"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_g4w8s")
+autoplay = true

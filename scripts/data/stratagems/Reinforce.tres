@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Stratagem" load_steps=3 format=3 uid="uid://dbvwq4ga1gx7o"]
+
+[ext_resource type="Texture2D" uid="uid://c6upylboy6gwj" path="res://assets/images/stratagems/Reinforce.png" id="1_igqlv"]
+[ext_resource type="Script" path="res://scripts/data/Stratagem.gd" id="1_wkxl4"]
+
+[resource]
+script = ExtResource("1_wkxl4")
+name = "Reinforce"
+description = "Call in a replacement Helldiver for a fallen teammate. One-time use."
+cooldown = 0
+damage = 1
+icon = ExtResource("1_igqlv")
+type = "Support"
+range = 1

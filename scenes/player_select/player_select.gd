@@ -54,7 +54,7 @@ func _add_player_panel(trigger_button: Button):
 
 	var panel = _create_player_panel()
 
-	# Always insert before the remaining add buttons
+	# Insert before the first remaining add button (if any)
 	var insert_index := player_row.get_child_count()
 	for i in range(player_row.get_child_count()):
 		var child = player_row.get_child(i)
@@ -68,10 +68,24 @@ func _add_player_panel(trigger_button: Button):
 	current_player_count += 1
 
 func _on_confirm_pressed():
-	print("✅ FINALIZED SQUAD:")
+	# Access the autoloaded PlayerManager directly (no preload)
+	PlayerManager.clear_players()
+
 	for child in player_row.get_children():
 		if child.has_method("get_player_data"):
 			var data = child.get_player_data()
-			print("▶️ Player:", data.name)
-			for strat in data.strategems:
+
+			var player = Player.new()
+			player.name = data.name
+			player.health = 100
+			player.weapon = "Liberator"
+			player.stratagems = data.strategems
+			player.current_place = 0
+
+			PlayerManager.add_player(player)
+
+			print("✅ Player added:", player.name)
+			for strat in player.stratagems:
 				print("   -", strat.name)
+
+	get_tree().change_scene_to_file("res://scenes/automatonintro/AutomatonIntro.tscn")
