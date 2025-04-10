@@ -64,6 +64,7 @@ texture = ExtResource("4_7q5p8")
 expand_mode = 1
 
 [node name="playerHUD" type="TextureRect" parent="background"]
+layout_mode = 0
 offset_left = -30.0
 offset_top = 930.0
 offset_right = 346.0
