@@ -6,9 +6,9 @@
 [resource]
 script = ExtResource("1_bnyxg")
 name = "Orbital Scan"
-description = "Makes you able to see 7 blocks ahead"
-cooldown = 5
+description = "Makes you able to see 5 blocks ahead"
+cooldown = 7
 damage = 0
 icon = ExtResource("1_dl1s3")
 type = "scan"
-range = 7
+range = 5

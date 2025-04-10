@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dduuuwxn40enh"]
+[gd_scene load_steps=27 format=3 uid="uid://dduuuwxn40enh"]
 
 [ext_resource type="Texture2D" uid="uid://thhyjh11gseg" path="res://assets/images/game/Automaton Background.png" id="1_j0bc4"]
 [ext_resource type="Script" path="res://scenes/game/game.gd" id="1_uor0w"]
@@ -8,6 +8,24 @@
 [ext_resource type="AudioStream" uid="uid://bem0lkt2hjfi" path="res://assets/music/automatons/Wilbert-Roget_-II-The-Automaton-Legion-Helldivers-2-_Original-Game-Soundtrack_.wav" id="4_g4w8s"]
 [ext_resource type="Texture2D" uid="uid://c7ekvvosl645r" path="res://assets/images/game/Emergency_Evacuation_Mission_Icon.png" id="5_43qlu"]
 [ext_resource type="Texture2D" uid="uid://idi528cf7qqb" path="res://assets/images/game/Extraction_Zone_Icon.webp" id="6_pgx45"]
+[ext_resource type="Texture2D" uid="uid://ch5svfv3jf4l" path="res://assets/images/game/tokens/Token1.png" id="8_134bj"]
+[ext_resource type="Texture2D" uid="uid://d0shb7ghcej57" path="res://assets/images/game/tokens/Token2.png" id="9_8ak4x"]
+[ext_resource type="Texture2D" uid="uid://dov1emwem404i" path="res://assets/images/game/tokens/Token3.png" id="10_44u23"]
+[ext_resource type="Texture2D" uid="uid://d0ooqkkpa4wv5" path="res://assets/images/game/tokens/Token4.png" id="11_rq0nh"]
+[ext_resource type="Texture2D" uid="uid://t6o8ftat683" path="res://assets/images/game/tokens/Token5.png" id="12_d510i"]
+[ext_resource type="Texture2D" uid="uid://cbjy2kmme3nsi" path="res://assets/images/game/tokens/Token6.png" id="13_op5ld"]
+[ext_resource type="Texture2D" uid="uid://dkiewyoyuc2iy" path="res://assets/images/game/tokens/Token7.png" id="14_hkrno"]
+[ext_resource type="Texture2D" uid="uid://ce1r4rq3l4wh8" path="res://assets/images/game/tokens/Token8.png" id="15_k7rx4"]
+[ext_resource type="Texture2D" uid="uid://clh4gpthkryk4" path="res://assets/images/game/tokens/Token9.png" id="16_du5dc"]
+[ext_resource type="Texture2D" uid="uid://ddygdq2xv7fab" path="res://assets/images/game/tokens/Token10.png" id="17_fnp7e"]
+[ext_resource type="Texture2D" uid="uid://c45xry8ktxagi" path="res://assets/images/game/tokens/Token11.png" id="18_rubhh"]
+[ext_resource type="Texture2D" uid="uid://dbuudock08sqq" path="res://assets/images/game/tokens/Token12.png" id="19_8nqt2"]
+[ext_resource type="Texture2D" uid="uid://0l0r70mt3iny" path="res://assets/images/game/tokens/Token14.png" id="21_afp3v"]
+[ext_resource type="Texture2D" uid="uid://bjh84xqfrh5ox" path="res://assets/images/game/tokens/Token15.png" id="22_i6yii"]
+[ext_resource type="Texture2D" uid="uid://br320k02e4qn4" path="res://assets/images/game/tokens/Token16.png" id="23_x20s8"]
+[ext_resource type="Texture2D" uid="uid://beo4bwk6uhr0k" path="res://assets/images/game/tokens/Token17.png" id="24_jcblm"]
+[ext_resource type="Texture2D" uid="uid://d3mfmqvkaobdw" path="res://assets/images/game/tokens/Token18.png" id="25_8act8"]
+[ext_resource type="Texture2D" uid="uid://b5k4hqaa5fotf" path="res://assets/images/game/tokens/Token19.png" id="26_rmubo"]
 
 [node name="Game" type="Control"]
 layout_mode = 3
@@ -22,10 +40,10 @@ texture = ExtResource("1_j0bc4")
 
 [node name="Board" type="TextureRect" parent="background"]
 layout_mode = 0
-offset_left = 270.0
-offset_top = 181.0
-offset_right = 1363.0
-offset_bottom = 903.0
+offset_left = 352.0
+offset_top = 124.0
+offset_right = 1445.0
+offset_bottom = 956.0
 texture = ExtResource("2_v8g18")
 
 [node name="logo" type="TextureRect" parent="background"]
@@ -36,64 +54,278 @@ offset_right = 1853.0
 offset_bottom = 692.0
 texture = ExtResource("3_r6tge")
 
-[node name="Rectangle" type="TextureRect" parent="background"]
+[node name="MissionObjective" type="TextureRect" parent="background"]
 layout_mode = 0
-offset_left = 1402.0
+offset_left = 1462.0
 offset_top = -3.0
 offset_right = 1932.0
 offset_bottom = 286.0
 texture = ExtResource("4_7q5p8")
 expand_mode = 1
 
+[node name="playerHUD" type="TextureRect" parent="background"]
+offset_left = -30.0
+offset_top = 930.0
+offset_right = 346.0
+offset_bottom = 1111.0
+texture = ExtResource("4_7q5p8")
+expand_mode = 1
+
+[node name="NameLabel" type="Label" parent="background/playerHUD"]
+layout_mode = 0
+offset_left = 125.0
+offset_right = 264.0
+offset_bottom = 23.0
+
+[node name="HealthBar" type="TextureProgressBar" parent="background/playerHUD"]
+layout_mode = 0
+offset_top = 39.0
+offset_right = 268.0
+offset_bottom = 83.0
+
+[node name="HealthLabel" type="Label" parent="background/playerHUD"]
+layout_mode = 0
+offset_left = 315.0
+offset_top = 46.0
+offset_right = 369.0
+offset_bottom = 87.0
+
+[node name="StimButton" type="TextureButton" parent="background/playerHUD"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
 [node name="missionicon" type="TextureRect" parent="background"]
 layout_mode = 0
-offset_left = 1435.0
-offset_top = 93.0
-offset_right = 1506.0
-offset_bottom = 164.0
+offset_left = 1510.0
+offset_top = 83.0
+offset_right = 1581.0
+offset_bottom = 154.0
 texture = ExtResource("5_43qlu")
 expand_mode = 1
 
 [node name="missionlabel" type="Label" parent="background"]
 layout_mode = 0
-offset_left = 1512.0
-offset_top = 112.0
-offset_right = 1878.0
-offset_bottom = 142.0
+offset_left = 1598.0
+offset_top = 104.0
+offset_right = 1861.0
+offset_bottom = 135.0
 theme_override_font_sizes/font_size = 22
-text = "Evacuate Super Citizens off the planet"
+text = "Evacuate Super Citizens "
 
 [node name="extractionicon" type="TextureRect" parent="background"]
 layout_mode = 0
-offset_left = 1431.0
-offset_top = 186.0
-offset_right = 1506.0
-offset_bottom = 261.0
+offset_left = 1507.0
+offset_top = 182.0
+offset_right = 1582.0
+offset_bottom = 257.0
 texture = ExtResource("6_pgx45")
 expand_mode = 1
 
 [node name="extractionlabel" type="Label" parent="background"]
 layout_mode = 0
-offset_left = 1512.0
-offset_top = 209.0
-offset_right = 1807.0
-offset_bottom = 239.0
+offset_left = 1598.0
+offset_top = 203.0
+offset_right = 1922.0
+offset_bottom = 234.0
 theme_override_font_sizes/font_size = 22
 text = "Extract savely with your squad"
 
 [node name="objectivelabel" type="Label" parent="background"]
 layout_mode = 0
-offset_left = 1539.0
+offset_left = 1584.0
 offset_top = 13.0
-offset_right = 1802.0
+offset_right = 1847.0
 offset_bottom = 55.0
 theme_override_font_sizes/font_size = 30
 text = "Mission Objective:"
 
+[node name="Token1" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 386.0
+offset_top = 158.0
+offset_right = 562.0
+offset_bottom = 329.0
+texture = ExtResource("8_134bj")
+expand_mode = 1
+
+[node name="Token2" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 595.0
+offset_top = 159.0
+offset_right = 771.0
+offset_bottom = 330.0
+texture = ExtResource("9_8ak4x")
+expand_mode = 1
+
+[node name="Token3" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 805.0
+offset_top = 159.0
+offset_right = 981.0
+offset_bottom = 330.0
+texture = ExtResource("10_44u23")
+expand_mode = 1
+
+[node name="Token4" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 1017.0
+offset_top = 160.0
+offset_right = 1193.0
+offset_bottom = 331.0
+texture = ExtResource("11_rq0nh")
+expand_mode = 1
+
+[node name="Token5" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 1228.0
+offset_top = 162.0
+offset_right = 1404.0
+offset_bottom = 333.0
+texture = ExtResource("12_d510i")
+expand_mode = 1
+
+[node name="Token6" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 385.0
+offset_top = 357.0
+offset_right = 561.0
+offset_bottom = 528.0
+texture = ExtResource("13_op5ld")
+expand_mode = 1
+
+[node name="Token7" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 594.0
+offset_top = 358.0
+offset_right = 770.0
+offset_bottom = 529.0
+texture = ExtResource("14_hkrno")
+expand_mode = 1
+
+[node name="Token8" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 804.0
+offset_top = 358.0
+offset_right = 980.0
+offset_bottom = 529.0
+texture = ExtResource("15_k7rx4")
+expand_mode = 1
+
+[node name="Token9" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 1016.0
+offset_top = 359.0
+offset_right = 1192.0
+offset_bottom = 530.0
+texture = ExtResource("16_du5dc")
+expand_mode = 1
+
+[node name="Token10" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 1227.0
+offset_top = 361.0
+offset_right = 1403.0
+offset_bottom = 532.0
+texture = ExtResource("17_fnp7e")
+expand_mode = 1
+
+[node name="Token11" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 383.0
+offset_top = 550.0
+offset_right = 559.0
+offset_bottom = 721.0
+texture = ExtResource("18_rubhh")
+expand_mode = 1
+
+[node name="Token12" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 592.0
+offset_top = 551.0
+offset_right = 768.0
+offset_bottom = 722.0
+texture = ExtResource("19_8nqt2")
+expand_mode = 1
+
+[node name="Token13" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 802.0
+offset_top = 551.0
+offset_right = 978.0
+offset_bottom = 722.0
+texture = ExtResource("5_43qlu")
+expand_mode = 1
+
+[node name="Token14" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 1014.0
+offset_top = 552.0
+offset_right = 1190.0
+offset_bottom = 723.0
+texture = ExtResource("21_afp3v")
+expand_mode = 1
+
+[node name="Token15" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 1225.0
+offset_top = 554.0
+offset_right = 1401.0
+offset_bottom = 725.0
+texture = ExtResource("22_i6yii")
+expand_mode = 1
+
+[node name="Token16" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 382.0
+offset_top = 743.0
+offset_right = 558.0
+offset_bottom = 914.0
+texture = ExtResource("23_x20s8")
+expand_mode = 1
+
+[node name="Token17" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 591.0
+offset_top = 744.0
+offset_right = 767.0
+offset_bottom = 915.0
+texture = ExtResource("24_jcblm")
+expand_mode = 1
+
+[node name="Token18" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 801.0
+offset_top = 744.0
+offset_right = 977.0
+offset_bottom = 915.0
+texture = ExtResource("25_8act8")
+expand_mode = 1
+
+[node name="Token19" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 1013.0
+offset_top = 745.0
+offset_right = 1189.0
+offset_bottom = 916.0
+texture = ExtResource("26_rmubo")
+expand_mode = 1
+
+[node name="Token20" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 1224.0
+offset_top = 747.0
+offset_right = 1400.0
+offset_bottom = 918.0
+texture = ExtResource("6_pgx45")
+expand_mode = 1
+
 [node name="PlayerList" type="VBoxContainer" parent="."]
 layout_mode = 0
+offset_left = 9.0
+offset_top = 9.0
 offset_right = 66.0
-offset_bottom = 104.0
+offset_bottom = 246.0
 
 [node name="PlayerName1" type="Label" parent="PlayerList"]
 layout_mode = 2
@@ -109,10 +341,10 @@ layout_mode = 2
 
 [node name="StratagemDisplay" type="GridContainer" parent="."]
 layout_mode = 0
-offset_left = 3.0
-offset_top = 153.0
-offset_right = 24.0
-offset_bottom = 338.0
+offset_left = 9.0
+offset_top = 326.0
+offset_right = 100.0
+offset_bottom = 515.0
 
 [node name="Stratagem1" type="TextureButton" parent="StratagemDisplay"]
 layout_mode = 2
@@ -128,16 +360,18 @@ layout_mode = 2
 
 [node name="TurnLabel" type="Label" parent="."]
 layout_mode = 0
-offset_top = 463.0
-offset_right = 40.0
-offset_bottom = 497.0
+offset_left = 456.0
+offset_top = 36.0
+offset_right = 1106.0
+offset_bottom = 105.0
 
 [node name="NextTurnButton" type="Button" parent="."]
 layout_mode = 0
-offset_left = 11.0
-offset_top = 502.0
-offset_right = 109.0
-offset_bottom = 533.0
+offset_left = 756.0
+offset_top = 983.0
+offset_right = 1043.0
+offset_bottom = 1060.0
+theme_override_font_sizes/font_size = 50
 text = "Next Player"
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
