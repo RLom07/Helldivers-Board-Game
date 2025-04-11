@@ -353,7 +353,7 @@ layout_mode = 2
 [node name="StratagemDisplay" type="GridContainer" parent="."]
 layout_mode = 0
 offset_left = 9.0
-offset_top = 326.0
+offset_top = 305.0
 offset_right = 100.0
 offset_bottom = 515.0
 
@@ -369,12 +369,12 @@ layout_mode = 2
 [node name="Stratagem4" type="TextureButton" parent="StratagemDisplay"]
 layout_mode = 2
 
-[node name="TurnLabel" type="Label" parent="."]
+[node name="CurrentTile" type="Label" parent="."]
 layout_mode = 0
-offset_left = 456.0
-offset_top = 36.0
-offset_right = 1106.0
-offset_bottom = 105.0
+offset_left = 690.0
+offset_top = 21.0
+offset_right = 1205.0
+offset_bottom = 83.0
 
 [node name="NextTurnButton" type="Button" parent="."]
 layout_mode = 0

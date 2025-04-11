@@ -12,3 +12,6 @@ damage = 10
 icon = ExtResource("1_cmeif")
 type = "bullet"
 range = 3
+blast_radius = 0
+area_impact = 0
+blast_forward = 3
