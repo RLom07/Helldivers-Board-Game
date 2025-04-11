@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://dduuuwxn40enh"]
+[gd_scene load_steps=28 format=3 uid="uid://dduuuwxn40enh"]
 
 [ext_resource type="Texture2D" uid="uid://thhyjh11gseg" path="res://assets/images/game/Automaton Background.png" id="1_j0bc4"]
 [ext_resource type="Script" path="res://scenes/game/game.gd" id="1_uor0w"]
@@ -8,6 +8,7 @@
 [ext_resource type="AudioStream" uid="uid://bem0lkt2hjfi" path="res://assets/music/automatons/Wilbert-Roget_-II-The-Automaton-Legion-Helldivers-2-_Original-Game-Soundtrack_.wav" id="4_g4w8s"]
 [ext_resource type="Texture2D" uid="uid://c7ekvvosl645r" path="res://assets/images/game/Emergency_Evacuation_Mission_Icon.png" id="5_43qlu"]
 [ext_resource type="Texture2D" uid="uid://idi528cf7qqb" path="res://assets/images/game/Extraction_Zone_Icon.webp" id="6_pgx45"]
+[ext_resource type="Texture2D" uid="uid://bhaao2r08xw4s" path="res://assets/images/game/Stim.png" id="6_prsrf"]
 [ext_resource type="Texture2D" uid="uid://ch5svfv3jf4l" path="res://assets/images/game/tokens/Token1.png" id="8_134bj"]
 [ext_resource type="Texture2D" uid="uid://d0shb7ghcej57" path="res://assets/images/game/tokens/Token2.png" id="9_8ak4x"]
 [ext_resource type="Texture2D" uid="uid://dov1emwem404i" path="res://assets/images/game/tokens/Token3.png" id="10_44u23"]
@@ -66,7 +67,7 @@ expand_mode = 1
 [node name="playerHUD" type="TextureRect" parent="background"]
 layout_mode = 0
 offset_left = -30.0
-offset_top = 930.0
+offset_top = 905.0
 offset_right = 346.0
 offset_bottom = 1111.0
 texture = ExtResource("4_7q5p8")
@@ -74,27 +75,36 @@ expand_mode = 1
 
 [node name="NameLabel" type="Label" parent="background/playerHUD"]
 layout_mode = 0
-offset_left = 125.0
+offset_left = 111.0
+offset_top = 7.0
 offset_right = 264.0
-offset_bottom = 23.0
+offset_bottom = 43.0
 
-[node name="HealthBar" type="TextureProgressBar" parent="background/playerHUD"]
+[node name="HealthBar" type="ProgressBar" parent="background/playerHUD"]
+show_behind_parent = true
+top_level = true
 layout_mode = 0
-offset_top = 39.0
-offset_right = 268.0
-offset_bottom = 83.0
-
-[node name="HealthLabel" type="Label" parent="background/playerHUD"]
-layout_mode = 0
-offset_left = 315.0
-offset_top = 46.0
-offset_right = 369.0
-offset_bottom = 87.0
+offset_left = 1.0
+offset_top = 957.0
+offset_right = 320.0
+offset_bottom = 1025.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+value = 100.0
 
 [node name="StimButton" type="TextureButton" parent="background/playerHUD"]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 50.0
+offset_top = 136.0
+offset_right = 124.0
+offset_bottom = 174.0
+texture_normal = ExtResource("6_prsrf")
+
+[node name="StimCountLabel" type="Label" parent="background/playerHUD"]
+layout_mode = 0
+offset_left = 143.0
+offset_top = 139.0
+offset_right = 183.0
+offset_bottom = 162.0
 
 [node name="missionicon" type="TextureRect" parent="background"]
 layout_mode = 0
