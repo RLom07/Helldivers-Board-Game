@@ -20,6 +20,12 @@ extends Control
 	$background/Token16, $background/Token17, $background/Token18, $background/Token19, $background/Token20
 ]
 
+@onready var enemy_tokens := {
+	16: $background/EnemyTank1,
+	17: $background/EnemyTank2
+}
+
+
 var players = []
 var current_player_index := 0
 var original_sizes := {}
@@ -29,6 +35,10 @@ var selected_strat_button = null
 var targeted_tiles: Array = []
 var last_previewed_target_index := -1
 var preview_tweens := {}
+
+# Enemies
+var enemies: Array = []
+var enemy_tile_map: Dictionary = {}
 
 func _ready():
 	players = PlayerManager.players.duplicate()
@@ -53,11 +63,27 @@ func _ready():
 		token.connect("gui_input", Callable(self, "_on_token_gui_input").bind(i))
 		original_sizes[token] = token.scale
 
+	for index in enemy_tokens.keys():
+		var enemy_token = enemy_tokens[index]
+		enemy_token.mouse_filter = Control.MOUSE_FILTER_STOP
+		enemy_token.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		enemy_token.connect("mouse_entered", Callable(self, "_on_token_mouse_entered").bind(index))
+		enemy_token.connect("mouse_exited", Callable(self, "_on_token_mouse_exited").bind(index))
+		enemy_token.connect("gui_input", Callable(self, "_on_token_gui_input").bind(index))
+		original_sizes[enemy_token] = enemy_token.scale
+
+
+	_create_enemies()
 	_render_players()
 	_update_turn()
 
 func _on_token_mouse_entered(index: int) -> void:
-	var token = tokens[index]
+	var token: Control = tokens[index]
+	if enemy_tokens.has(index) and not tokens[index].visible:
+		token = enemy_tokens[index]
+
+
+
 	if selected_stratagem:
 		_preview_tile_target(index)
 	else:
@@ -74,13 +100,14 @@ func _on_token_gui_input(event: InputEvent, index: int) -> void:
 	if event is InputEventMouseButton and event.pressed:
 		var player = players[current_player_index]
 		var current_tile: int = player.current_place
+
 		if selected_stratagem:
 			var target_tile := index
 			if abs(target_tile - current_tile) <= selected_stratagem.range:
 				var affected = _get_affected_tiles(selected_stratagem, target_tile)
 				for i in affected:
 					if selected_stratagem.type == "Scan":
-						_fade_out_token(tokens[i])  # Only fade if it's a Scan stratagem
+						_fade_out_token(tokens[i])
 					else:
 						_reset_tile_scale(tokens[i])
 				print("💣 Tile", target_tile + 1, "hit by", selected_stratagem.name)
@@ -88,9 +115,21 @@ func _on_token_gui_input(event: InputEvent, index: int) -> void:
 			else:
 				print("❌ Out of range")
 		else:
-			# Only allow moving (and fading) when no stratagem is selected
-			_fade_out_token(token)
+			# ✅ This is the correct 'else' block
 			player.current_place = index
+
+			if enemy_tokens.has(index):
+				var enemy_token = enemy_tokens[index]
+				enemy_token.visible = true
+				enemy_token.mouse_filter = Control.MOUSE_FILTER_STOP
+				enemy_token.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+				enemy_token.connect("gui_input", func(event):
+					if event is InputEventMouseButton and event.pressed:
+						player.current_place = index
+						_update_turn()
+				)
+
+			_fade_out_token(tokens[index])
 			_update_turn()
 
 func _on_mouse_entered_button(button: Control):
@@ -203,15 +242,25 @@ func _preview_tile_target(target_index: int):
 		var affected = _get_affected_tiles(selected_stratagem, target_index)
 		for j in affected:
 			if j >= 0 and j < tokens.size():
-				_pulse_token(tokens[j])
+				var token: Control = tokens[j]
+				if enemy_tokens.has(j) and not tokens[j].visible:
+					# Enemy token only pulses if number token is hidden (revealed)
+					token = enemy_tokens[j]
+				elif not tokens[j].visible:
+					continue  # skip if both tokens are hidden
+				_pulse_token(token)
 				targeted_tiles.append(j)
 
 func _reset_preview_tiles():
 	for i in targeted_tiles:
-		if preview_tweens.has(tokens[i]):
-			preview_tweens[tokens[i]].kill()
-		if original_sizes.has(tokens[i]):
-			tokens[i].scale = original_sizes[tokens[i]]
+		var token: Control = tokens[i]
+		if enemy_tokens.has(i) and not tokens[i].visible:
+			token = enemy_tokens[i]
+
+		if preview_tweens.has(token):
+			preview_tweens[token].kill()
+		if original_sizes.has(token):
+			token.scale = original_sizes[token]
 	last_previewed_target_index = -1
 	preview_tweens.clear()
 	targeted_tiles.clear()
@@ -272,3 +321,64 @@ func _fade_out_token(token: TextureRect):
 	var tween = create_tween()
 	tween.tween_property(token, "modulate:a", 0.0, 0.5)
 	tween.tween_callback(Callable(token, "hide"))
+
+func _create_enemies():
+	var annihilator_tank = Enemy.new()
+	annihilator_tank.name = "Annihilator Tank"
+	annihilator_tank.health = 300
+	annihilator_tank.attacks = [
+		{ "name": "Cannon Blast", "damage": 40, "description": "Fires a powerful cannon round at a target." },
+		{ "name": "Missile Barrage", "damage": 25, "description": "Launches a barrage of guided missiles." }
+	]
+	annihilator_tank.weakness = "EMP"
+	annihilator_tank.resistance = "Explosive"
+	enemies.append(annihilator_tank)
+
+	var commissar = Enemy.new()
+	commissar.name = "Commissar"
+	commissar.health = 180
+	commissar.attacks = [
+		{ "name": "Inspiring Shot", "damage": 20, "description": "Shoots while boosting nearby allies." },
+		{ "name": "Suppressive Fire", "damage": 15, "description": "Lays down suppressing fire in an area." }
+	]
+	commissar.weakness = "Fire"
+	commissar.resistance = "Piercing"
+	enemies.append(commissar)
+
+	var devastator = Enemy.new()
+	devastator.name = "Devastator"
+	devastator.health = 250
+	devastator.attacks = [
+		{ "name": "Laser Beam", "damage": 35, "description": "Shoots a high-energy laser." },
+		{ "name": "Shockwave Slam", "damage": 30, "description": "Slams the ground to create a damaging shockwave." }
+	]
+	devastator.weakness = "Electric"
+	devastator.resistance = "Fire"
+	enemies.append(devastator)
+
+	var hulk = Enemy.new()
+	hulk.name = "Hulk"
+	hulk.health = 400
+	hulk.attacks = [
+		{ "name": "Smash", "damage": 45, "description": "Brings down a massive fist on its target." },
+		{ "name": "Grab and Throw", "damage": 30, "description": "Grabs a player and throws them." }
+	]
+	hulk.weakness = "Piercing"
+	hulk.resistance = "Blunt"
+	enemies.append(hulk)
+
+	var marauder = Enemy.new()
+	marauder.name = "Marauder"
+	marauder.health = 150
+	marauder.attacks = [
+		{ "name": "Quick Stab", "damage": 20, "description": "Stabs quickly with sharp blades." },
+		{ "name": "Poison Dart", "damage": 10, "description": "Fires a dart that poisons the target." }
+	]
+	marauder.weakness = "Explosive"
+	marauder.resistance = "Electric"
+	enemies.append(marauder)
+
+	print("Enemies created:", enemies.size())
+
+	enemy_tile_map[16] = enemies[0]
+	enemy_tile_map[17] = enemies[0]

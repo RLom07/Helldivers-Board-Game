@@ -1,8 +1,11 @@
-# enemy.gd
 extends Resource
+
 class_name Enemy
-@export var name: String
-@export var health: int
-@export var attacks: Array[Dictionary] = []  # Each attack has { "name": String, "damage": int, "description": String }
-@export var weakness: String
-@export var resistance: String
+
+# Define all necessary properties
+var name: String = ""
+var health: int = 100
+var attacks: Array = []  # This line is REQUIRED for your code to work
+var weakness: String = ""
+var resistance: String = ""
+var isdefeated: bool = false

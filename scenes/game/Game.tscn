@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://dduuuwxn40enh"]
+[gd_scene load_steps=29 format=3 uid="uid://dduuuwxn40enh"]
 
 [ext_resource type="Texture2D" uid="uid://thhyjh11gseg" path="res://assets/images/game/Automaton Background.png" id="1_j0bc4"]
 [ext_resource type="Script" path="res://scenes/game/game.gd" id="1_uor0w"]
@@ -24,6 +24,7 @@
 [ext_resource type="Texture2D" uid="uid://0l0r70mt3iny" path="res://assets/images/game/tokens/Token14.png" id="21_afp3v"]
 [ext_resource type="Texture2D" uid="uid://bjh84xqfrh5ox" path="res://assets/images/game/tokens/Token15.png" id="22_i6yii"]
 [ext_resource type="Texture2D" uid="uid://br320k02e4qn4" path="res://assets/images/game/tokens/Token16.png" id="23_x20s8"]
+[ext_resource type="Texture2D" uid="uid://ca54thyryof1f" path="res://assets/images/game/enemies/Annihilator Tank.png" id="24_bw736"]
 [ext_resource type="Texture2D" uid="uid://beo4bwk6uhr0k" path="res://assets/images/game/tokens/Token17.png" id="24_jcblm"]
 [ext_resource type="Texture2D" uid="uid://d3mfmqvkaobdw" path="res://assets/images/game/tokens/Token18.png" id="25_8act8"]
 [ext_resource type="Texture2D" uid="uid://b5k4hqaa5fotf" path="res://assets/images/game/tokens/Token19.png" id="26_rmubo"]
@@ -293,6 +294,24 @@ offset_top = 743.0
 offset_right = 558.0
 offset_bottom = 914.0
 texture = ExtResource("23_x20s8")
+expand_mode = 1
+
+[node name="EnemyTank1" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 608.0
+offset_top = 759.0
+offset_right = 765.0
+offset_bottom = 910.0
+texture = ExtResource("24_bw736")
+expand_mode = 1
+
+[node name="EnemyTank2" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 812.0
+offset_top = 763.0
+offset_right = 969.0
+offset_bottom = 914.0
+texture = ExtResource("24_bw736")
 expand_mode = 1
 
 [node name="Token17" type="TextureRect" parent="background"]
