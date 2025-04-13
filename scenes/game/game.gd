@@ -113,11 +113,14 @@ func _on_token_gui_input(event: InputEvent, index: int) -> void:
 			var target_tile := index
 			if abs(target_tile - current_tile) <= selected_stratagem.range:
 				var affected = _get_affected_tiles(selected_stratagem, target_tile)
-				for i in affected:
-					if selected_stratagem.type == "Scan":
+				if selected_stratagem.type == "Scan":
+					for i in affected:
 						_fade_out_token(tokens[i])
-					else:
-						_reset_tile_scale(tokens[i])
+				else:
+					_apply_stratagem_to_tiles(selected_stratagem, affected)
+
+
+
 
 				print("💣 Tile", target_tile + 1, "hit by", selected_stratagem.name)
 
@@ -163,6 +166,22 @@ func _on_token_gui_input(event: InputEvent, index: int) -> void:
 				tok.scale = original_sizes[tok]
 
 		preview_tweens.clear()
+
+func _apply_stratagem_to_tiles(strat, tiles: Array):
+	if strat.type == "Scan" or strat.name == "Reinforce":
+		return
+
+	var result = strat.process_attack(tiles as Array[int], players, enemy_tile_map)
+
+	# Update visuals and defeated tokens
+	for i in result["defeated_tiles"]:
+		if enemy_tokens.has(i):
+			var token = enemy_tokens[i]
+			token.visible = true
+			token.modulate.a = 0.6
+
+	_show_stratagem_impact(result["hidden_hits"], result["revealed_hit_names"])
+
 
 func _on_mouse_entered_button(button: Control):
 	if not original_sizes.has(button):
@@ -757,3 +776,19 @@ func _on_reinforce_selected(id: int, from_player: Player, popup: PopupMenu):
 	if is_instance_valid(popup):
 		remove_child(popup)
 		popup.queue_free()
+
+func _show_stratagem_impact(hidden_count: int, revealed_enemies: Array):
+	var existing := get_node_or_null("StratagemImpact")
+	if existing != null:
+		existing.queue_free()
+
+	var scene = preload("res://scenes/ui/StratagemImpact.tscn")
+	var instance = scene.instantiate()
+	instance.name = "StratagemImpact"  # for safety check above
+	add_child(instance)
+
+	instance.setup(hidden_count, revealed_enemies)
+	instance.continue_pressed.connect(func():
+		print("✅ Player continues after impact message.")
+		instance.queue_free()
+	)
