@@ -1,0 +1,53 @@
+[gd_scene load_steps=3 format=3 uid="uid://cij64fwmkxqs1"]
+
+[ext_resource type="Script" path="res://scenes/ui/FleeResult.gd" id="1_fkppj"]
+[ext_resource type="Texture2D" uid="uid://doyw1x000mfn3" path="res://assets/images/stratagems/Rectangle 44.png" id="2_blhdb"]
+
+[node name="FleeResult" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_fkppj")
+
+[node name="background" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 472.0
+offset_top = 256.0
+offset_right = 1328.0
+offset_bottom = 698.0
+texture = ExtResource("2_blhdb")
+expand_mode = 1
+
+[node name="TitleLabel" type="Label" parent="background"]
+layout_mode = 0
+offset_left = 283.0
+offset_top = 15.0
+offset_right = 597.0
+offset_bottom = 70.0
+theme_override_font_sizes/font_size = 40
+text = "This Happenend"
+
+[node name="OutcomeLabel" type="Label" parent="background"]
+layout_mode = 0
+offset_left = 170.0
+offset_top = 135.0
+offset_right = 626.0
+offset_bottom = 184.0
+theme_override_font_sizes/font_size = 35
+text = "The enemy is still standing."
+
+[node name="EnemyAttackLabel" type="Label" parent="background"]
+layout_mode = 0
+offset_left = 22.0
+offset_top = 213.0
+offset_right = 833.0
+offset_bottom = 270.0
+theme_override_font_sizes/font_size = 32
+
+[node name="ContinueButton" type="Button" parent="background"]
+layout_mode = 0
+offset_left = 368.0
+offset_top = 334.0
+offset_right = 508.0
+offset_bottom = 384.0
+theme_override_font_sizes/font_size = 30
+text = "Continue"

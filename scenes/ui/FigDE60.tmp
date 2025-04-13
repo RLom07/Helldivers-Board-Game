@@ -1,0 +1,76 @@
+[gd_scene load_steps=3 format=3 uid="uid://c8jsoyjy16bt8"]
+
+[ext_resource type="Script" path="res://scenes/ui/TankEncounter.gd" id="1_jw7qx"]
+[ext_resource type="Texture2D" uid="uid://doyw1x000mfn3" path="res://assets/images/stratagems/Rectangle 44.png" id="2_eb2wt"]
+
+[node name="FightDiceRoll" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_jw7qx")
+
+[node name="background" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 472.0
+offset_top = 256.0
+offset_right = 1328.0
+offset_bottom = 698.0
+texture = ExtResource("2_eb2wt")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="background"]
+layout_mode = 0
+offset_left = 31.0
+offset_top = 16.0
+offset_right = 826.0
+offset_bottom = 125.0
+theme_override_font_sizes/font_size = 45
+text = "Roll to attack with your Liberator!"
+horizontal_alignment = 1
+
+[node name="1" type="Button" parent="background"]
+layout_mode = 2
+offset_left = 68.0
+offset_top = 106.0
+offset_right = 792.0
+offset_bottom = 147.0
+text = "1"
+
+[node name="2" type="Button" parent="background"]
+layout_mode = 2
+offset_left = 69.0
+offset_top = 154.0
+offset_right = 793.0
+offset_bottom = 195.0
+text = "2"
+
+[node name="3" type="Button" parent="background"]
+layout_mode = 2
+offset_left = 69.0
+offset_top = 201.0
+offset_right = 793.0
+offset_bottom = 242.0
+text = "3"
+
+[node name="4" type="Button" parent="background"]
+layout_mode = 2
+offset_left = 69.0
+offset_top = 249.0
+offset_right = 793.0
+offset_bottom = 290.0
+text = "4"
+
+[node name="5" type="Button" parent="background"]
+layout_mode = 2
+offset_left = 70.0
+offset_top = 299.0
+offset_right = 794.0
+offset_bottom = 340.0
+text = "5"
+
+[node name="6" type="Button" parent="background"]
+layout_mode = 2
+offset_left = 70.0
+offset_top = 349.0
+offset_right = 794.0
+offset_bottom = 390.0
+text = "6"

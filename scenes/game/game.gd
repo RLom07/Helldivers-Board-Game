@@ -41,6 +41,7 @@ var enemies: Array = []
 var enemy_tile_map: Dictionary = {}
 
 func _ready():
+	randomize()
 	players = PlayerManager.players.duplicate()
 	if players.is_empty():
 		return
@@ -115,22 +116,37 @@ func _on_token_gui_input(event: InputEvent, index: int) -> void:
 			else:
 				print("❌ Out of range")
 		else:
-			# ✅ This is the correct 'else' block
 			player.current_place = index
 
 			if enemy_tokens.has(index):
 				var enemy_token = enemy_tokens[index]
 				enemy_token.visible = true
-				enemy_token.mouse_filter = Control.MOUSE_FILTER_STOP
-				enemy_token.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-				enemy_token.connect("gui_input", func(event):
-					if event is InputEventMouseButton and event.pressed:
-						player.current_place = index
-						_update_turn()
-				)
+				_fade_out_token(tokens[index])
+				var enemy: Enemy = enemy_tile_map.get(index, null)
+				if enemy and not enemy.isdefeated:
+					await get_tree().create_timer(2.0).timeout
+					_show_tank_encounter()
+			else:
+				_fade_out_token(tokens[index])
 
-			_fade_out_token(tokens[index])
 			_update_turn()
+
+			# 🔁 FULL HOVER/PULSE RESET (tokens + enemy_tokens)
+			for i in range(tokens.size()):
+				var tok = tokens[i]
+				if preview_tweens.has(tok):
+					preview_tweens[tok].kill()
+				if original_sizes.has(tok):
+					tok.scale = original_sizes[tok]
+
+			for idx in enemy_tokens:
+				var tok = enemy_tokens[idx]
+				if preview_tweens.has(tok):
+					preview_tweens[tok].kill()
+				if original_sizes.has(tok):
+					tok.scale = original_sizes[tok]
+
+			preview_tweens.clear()
 
 func _on_mouse_entered_button(button: Control):
 	_scale_token_to(button, original_sizes[button] * 1.2)
@@ -320,19 +336,145 @@ func _on_damage_pressed():
 func _fade_out_token(token: TextureRect):
 	var tween = create_tween()
 	tween.tween_property(token, "modulate:a", 0.0, 0.5)
-	tween.tween_callback(Callable(token, "hide"))
+	tween.tween_callback(Callable(token, "hide"))	
+
+func _on_tank_encounter_choice(choice: String) -> void:
+	var player = players[current_player_index]
+	var tile_index: int = player.current_place
+
+	if not enemy_tile_map.has(tile_index):
+		print("⚠️ No enemy found on tile", tile_index)
+		return
+
+	var enemy: Enemy = enemy_tile_map[tile_index]
+
+	if choice == "fight":
+		_show_fight_dice_roll(enemy, tile_index)
+	elif choice == "flight":
+		_show_flight_dice_roll(enemy, player, tile_index)
+
+func _show_flight_dice_roll(enemy: Enemy, player: Player, tile_index: int):
+	var flight_scene = preload("res://scenes/ui/FlightDiceRoll.tscn")
+	var flight_instance = flight_scene.instantiate()
+	add_child(flight_instance)
+	flight_instance.setup(enemy)
+	flight_instance.flight_attempt_result.connect(func(success: bool):
+		_on_flight_result(success, enemy, player, tile_index)
+	)
+
+func _on_flight_result(success: bool, enemy: Enemy, player: Player, tile_index: int):
+	if success:
+		var safe_tile = _find_safe_tile()
+		player.current_place = safe_tile
+
+		# 🔁 FULL HOVER/PULSE RESET (tokens + enemy_tokens)
+		for i in range(tokens.size()):
+			var tok = tokens[i]
+			if preview_tweens.has(tok):
+				preview_tweens[tok].kill()
+			if original_sizes.has(tok):
+				tok.scale = original_sizes[tok]
+
+		for idx in enemy_tokens:
+			var tok = enemy_tokens[idx]
+			if preview_tweens.has(tok):
+				preview_tweens[tok].kill()
+			if original_sizes.has(tok):
+				tok.scale = original_sizes[tok]
+
+		preview_tweens.clear()
+
+		_update_turn()
+		_show_flee_result(enemy, player, success, tile_index, safe_tile)
+	else:
+		var attack = enemy.attacks[randi() % enemy.attacks.size()]
+		player.health = max(0, player.health - attack.damage)
+		update_health(player.health)
+		_show_flee_result(enemy, player, success, tile_index, tile_index)
+
+func _show_flee_result(enemy: Enemy, player: Player, success: bool, tile_index: int, safe_tile_index: int):
+	var scene = preload("res://scenes/ui/FleeResult.tscn")
+	var instance = scene.instantiate()
+	add_child(instance)
+
+	instance.setup(success, enemy, tile_index, player, safe_tile_index)
+
+	instance.continue_pressed.connect(func(_enemy, _tile_index):
+		if not success:
+			if player.health > 0:
+				_show_tank_encounter()
+			else:
+				print("💀 Player has died!")
+		else:
+			print("✅ Escape successful")
+	)
+	
+func _find_safe_tile() -> int:
+	for i in range(tokens.size()):
+		if not enemy_tile_map.has(i):
+			return i
+	return 0  # fallback
+
+func _show_tank_encounter():
+	var encounter_scene = preload("res://scenes/ui/TankEncounter.tscn")
+	var encounter_instance = encounter_scene.instantiate()
+	add_child(encounter_instance)  # adds it directly to the Game scene
+	encounter_instance.encounter_choice_made.connect(_on_tank_encounter_choice)
+
+func _show_fight_dice_roll(enemy: Enemy, tile_index: int):
+	var fight_scene = preload("res://scenes/ui/FightDiceRoll.tscn")
+	var fight_instance = fight_scene.instantiate()
+	add_child(fight_instance)
+	fight_instance.setup(enemy)
+	fight_instance.dice_roll_result.connect(_on_dice_roll_result.bind(enemy, tile_index))
+
+func _on_dice_roll_result(damage: int, enemy: Enemy, tile_index: int) -> void:
+	enemy.health -= damage
+	print("🗡️", enemy.name, "takes", damage, "damage! Remaining HP:", enemy.health)
+
+	var is_defeated = enemy.health <= 0
+	if is_defeated:
+		enemy.isdefeated = true
+		var token = enemy_tokens[tile_index]
+		token.modulate.a = 0.6  # Set opacity to 60%
+		print("💀", enemy.name, "defeated!")
+
+	_show_combat_result(damage, is_defeated, enemy, tile_index)	
+
+func _show_combat_result(damage: int, is_defeated: bool, enemy: Enemy, tile_index: int) -> void:
+	var result_scene = preload("res://scenes/ui/CombatResult.tscn")
+	var result_instance = result_scene.instantiate()
+	add_child(result_instance)
+	var player = players[current_player_index]
+	result_instance.setup(enemy, damage, tile_index, player)
+
+	result_instance.continue_pressed.connect(func (_enemy, _tile_index):
+		update_health(player.health)
+
+
+		if not _enemy.isdefeated:
+			_show_tank_encounter()
+		else:
+			print("✅ Combat over.")
+	)
 
 func _create_enemies():
-	var annihilator_tank = Enemy.new()
-	annihilator_tank.name = "Annihilator Tank"
-	annihilator_tank.health = 300
-	annihilator_tank.attacks = [
+	var tank1 = Enemy.new()
+	tank1.name = "Annihilator Tank"
+	tank1.health = 150
+	tank1.attacks = [
 		{ "name": "Cannon Blast", "damage": 40, "description": "Fires a powerful cannon round at a target." },
 		{ "name": "Missile Barrage", "damage": 25, "description": "Launches a barrage of guided missiles." }
 	]
-	annihilator_tank.weakness = "EMP"
-	annihilator_tank.resistance = "Explosive"
-	enemies.append(annihilator_tank)
+	tank1.weakness = "EMP"
+	tank1.resistance = "Explosive"
+
+	var tank2 = Enemy.new()
+	tank2.name = "Annihilator Tank"
+	tank2.health = 150
+	tank2.attacks = tank1.attacks.duplicate(true)
+	tank2.weakness = tank1.weakness
+	tank2.resistance = tank1.resistance
 
 	var commissar = Enemy.new()
 	commissar.name = "Commissar"
@@ -380,5 +522,8 @@ func _create_enemies():
 
 	print("Enemies created:", enemies.size())
 
-	enemy_tile_map[16] = enemies[0]
-	enemy_tile_map[17] = enemies[0]
+	enemy_tile_map[16] = tank1
+	enemy_tile_map[17] = tank2
+
+	enemies.append(tank1)
+	enemies.append(tank2)
