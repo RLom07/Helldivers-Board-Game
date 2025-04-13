@@ -21,10 +21,17 @@ extends Control
 ]
 
 @onready var enemy_tokens := {
+	2: $background/EnemyMarauder1,
+	4: $background/EnemyCommissar1,
+	6: $background/EnemyMarauder2,
+	8: $background/EnemyDevastator1,
+	11: $background/EnemyHulk1,
+	14: $background/EnemyCommissar2,
+	15: $background/EnemyHulk2,
 	16: $background/EnemyTank1,
-	17: $background/EnemyTank2
+	17: $background/EnemyTank2,
+	18: $background/EnemyDevastator2
 }
-
 
 var players = []
 var current_player_index := 0
@@ -133,7 +140,8 @@ func _on_token_gui_input(event: InputEvent, index: int) -> void:
 				var enemy: Enemy = enemy_tile_map.get(index, null)
 				if enemy and not enemy.isdefeated:
 					await get_tree().create_timer(2.0).timeout
-					_show_tank_encounter()
+					_show_enemy_encounter(enemy)
+
 			else:
 				_fade_out_token(tokens[index])
 
@@ -283,12 +291,12 @@ func _toggle_stratagem(strat, button: TextureButton):
 			print("🚫", player.name, "has already used Reinforce.")
 			return
 		_show_reinforce_menu(player)
-		player.reinforce_used = true  # Reinforce is consumed immediately
-		_update_turn()
+		# ❌ Don't set reinforce_used here
 	else:
 		selected_stratagem = strat
 		selected_strat_button = button
 		_scale_token_to(button, original_sizes[button] * 1.2)
+
 
 func _preview_tile_target(target_index: int):
 	if target_index == last_previewed_target_index:
@@ -470,7 +478,7 @@ func _show_flee_result(enemy: Enemy, player: Player, success: bool, tile_index: 
 	instance.continue_pressed.connect(func(_enemy, _tile_index):
 		if not success:
 			if player.health > 0:
-				_show_tank_encounter()
+				_show_enemy_encounter(enemy)
 			else:
 				print("💀 Player has died!")
 		else:
@@ -483,10 +491,26 @@ func _find_safe_tile() -> int:
 			return i
 	return 0  # fallback
 
-func _show_tank_encounter():
-	var encounter_scene = preload("res://scenes/ui/TankEncounter.tscn")
+func _show_enemy_encounter(enemy: Enemy):
+	var scene_path := ""
+	match enemy.name:
+		"Annihilator Tank":
+			scene_path = "res://scenes/ui/TankEncounter.tscn"
+		"Commissar":
+			scene_path = "res://scenes/ui/CommissarEncounter.tscn"
+		"Devastator":
+			scene_path = "res://scenes/ui/DevastatorEncounter.tscn"
+		"Hulk":
+			scene_path = "res://scenes/ui/HulkEncounter.tscn"
+		"Marauder":
+			scene_path = "res://scenes/ui/MarauderEncounter.tscn"
+		_:
+			print("⚠️ No encounter scene for", enemy.name)
+			return
+
+	var encounter_scene = load(scene_path)
 	var encounter_instance = encounter_scene.instantiate()
-	add_child(encounter_instance)  # adds it directly to the Game scene
+	add_child(encounter_instance)
 	encounter_instance.encounter_choice_made.connect(_on_tank_encounter_choice)
 
 func _show_fight_dice_roll(enemy: Enemy, tile_index: int):
@@ -537,12 +561,13 @@ func _show_combat_result(damage: int, is_defeated: bool, enemy: Enemy, tile_inde
 
 
 		if not _enemy.isdefeated:
-			_show_tank_encounter()
+			_show_enemy_encounter(enemy)
 		else:
 			print("✅ Combat over.")
 	)
 
 func _create_enemies():
+	# Tanks (already done correctly)
 	var tank1 = Enemy.new()
 	tank1.name = "Annihilator Tank"
 	tank1.health = 150
@@ -556,61 +581,119 @@ func _create_enemies():
 	var tank2 = Enemy.new()
 	tank2.name = "Annihilator Tank"
 	tank2.health = 150
-	tank2.attacks = tank1.attacks.duplicate(true)
-	tank2.weakness = tank1.weakness
-	tank2.resistance = tank1.resistance
+	tank2.attacks = [
+		{ "name": "Cannon Blast", "damage": 40, "description": "Fires a powerful cannon round at a target." },
+		{ "name": "Missile Barrage", "damage": 25, "description": "Launches a barrage of guided missiles." }
+	]
+	tank2.weakness = "EMP"
+	tank2.resistance = "Explosive"
 
-	var commissar = Enemy.new()
-	commissar.name = "Commissar"
-	commissar.health = 180
-	commissar.attacks = [
+	# Commissars
+	var commissar1 = Enemy.new()
+	commissar1.name = "Commissar"
+	commissar1.health = 180
+	commissar1.attacks = [
 		{ "name": "Inspiring Shot", "damage": 20, "description": "Shoots while boosting nearby allies." },
 		{ "name": "Suppressive Fire", "damage": 15, "description": "Lays down suppressing fire in an area." }
 	]
-	commissar.weakness = "Fire"
-	commissar.resistance = "Piercing"
-	enemies.append(commissar)
+	commissar1.weakness = "Fire"
+	commissar1.resistance = "Piercing"
 
-	var devastator = Enemy.new()
-	devastator.name = "Devastator"
-	devastator.health = 250
-	devastator.attacks = [
+	var commissar2 = Enemy.new()
+	commissar2.name = "Commissar"
+	commissar2.health = 180
+	commissar2.attacks = [
+		{ "name": "Inspiring Shot", "damage": 20, "description": "Shoots while boosting nearby allies." },
+		{ "name": "Suppressive Fire", "damage": 15, "description": "Lays down suppressing fire in an area." }
+	]
+	commissar2.weakness = "Fire"
+	commissar2.resistance = "Piercing"
+
+	# Devastators
+	var devastator1 = Enemy.new()
+	devastator1.name = "Devastator"
+	devastator1.health = 250
+	devastator1.attacks = [
 		{ "name": "Laser Beam", "damage": 35, "description": "Shoots a high-energy laser." },
 		{ "name": "Shockwave Slam", "damage": 30, "description": "Slams the ground to create a damaging shockwave." }
 	]
-	devastator.weakness = "Electric"
-	devastator.resistance = "Fire"
-	enemies.append(devastator)
+	devastator1.weakness = "Electric"
+	devastator1.resistance = "Fire"
 
-	var hulk = Enemy.new()
-	hulk.name = "Hulk"
-	hulk.health = 400
-	hulk.attacks = [
+	var devastator2 = Enemy.new()
+	devastator2.name = "Devastator"
+	devastator2.health = 250
+	devastator2.attacks = [
+		{ "name": "Laser Beam", "damage": 35, "description": "Shoots a high-energy laser." },
+		{ "name": "Shockwave Slam", "damage": 30, "description": "Slams the ground to create a damaging shockwave." }
+	]
+	devastator2.weakness = "Electric"
+	devastator2.resistance = "Fire"
+
+	# Hulks
+	var hulk1 = Enemy.new()
+	hulk1.name = "Hulk"
+	hulk1.health = 400
+	hulk1.attacks = [
 		{ "name": "Smash", "damage": 45, "description": "Brings down a massive fist on its target." },
 		{ "name": "Grab and Throw", "damage": 30, "description": "Grabs a player and throws them." }
 	]
-	hulk.weakness = "Piercing"
-	hulk.resistance = "Blunt"
-	enemies.append(hulk)
+	hulk1.weakness = "Piercing"
+	hulk1.resistance = "Blunt"
 
-	var marauder = Enemy.new()
-	marauder.name = "Marauder"
-	marauder.health = 150
-	marauder.attacks = [
+	var hulk2 = Enemy.new()
+	hulk2.name = "Hulk"
+	hulk2.health = 400
+	hulk2.attacks = [
+		{ "name": "Smash", "damage": 45, "description": "Brings down a massive fist on its target." },
+		{ "name": "Grab and Throw", "damage": 30, "description": "Grabs a player and throws them." }
+	]
+	hulk2.weakness = "Piercing"
+	hulk2.resistance = "Blunt"
+
+	# Marauders
+	var marauder1 = Enemy.new()
+	marauder1.name = "Marauder"
+	marauder1.health = 150
+	marauder1.attacks = [
 		{ "name": "Quick Stab", "damage": 20, "description": "Stabs quickly with sharp blades." },
 		{ "name": "Poison Dart", "damage": 10, "description": "Fires a dart that poisons the target." }
 	]
-	marauder.weakness = "Explosive"
-	marauder.resistance = "Electric"
-	enemies.append(marauder)
+	marauder1.weakness = "Explosive"
+	marauder1.resistance = "Electric"
 
-	print("Enemies created:", enemies.size())
+	var marauder2 = Enemy.new()
+	marauder2.name = "Marauder"
+	marauder2.health = 150
+	marauder2.attacks = [
+		{ "name": "Quick Stab", "damage": 20, "description": "Stabs quickly with sharp blades." },
+		{ "name": "Poison Dart", "damage": 10, "description": "Fires a dart that poisons the target." }
+	]
+	marauder2.weakness = "Explosive"
+	marauder2.resistance = "Electric"
 
+	# Add to enemy list (for debug/statistics)
+	enemies.append_array([
+		tank1, tank2,
+		commissar1, commissar2,
+		devastator1, devastator2,
+		hulk1, hulk2,
+		marauder1, marauder2
+	])
+
+	# Assign to enemy tiles
+	enemy_tile_map[2] = marauder1
+	enemy_tile_map[4] = commissar1
+	enemy_tile_map[6] = marauder2
+	enemy_tile_map[8] = devastator1
+	enemy_tile_map[11] = hulk1
+	enemy_tile_map[14] = commissar2
+	enemy_tile_map[15] = hulk2
 	enemy_tile_map[16] = tank1
 	enemy_tile_map[17] = tank2
+	enemy_tile_map[18] = devastator2
 
-	enemies.append(tank1)
-	enemies.append(tank2)
+	print("Enemies created:", enemies.size())
 
 func _next_alive_player():
 	var total_players := players.size()

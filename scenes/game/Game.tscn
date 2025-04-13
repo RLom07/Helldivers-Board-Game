@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://dduuuwxn40enh"]
+[gd_scene load_steps=33 format=3 uid="uid://dduuuwxn40enh"]
 
 [ext_resource type="Texture2D" uid="uid://thhyjh11gseg" path="res://assets/images/game/Automaton Background.png" id="1_j0bc4"]
 [ext_resource type="Script" path="res://scenes/game/game.gd" id="1_uor0w"]
@@ -15,17 +15,21 @@
 [ext_resource type="Texture2D" uid="uid://d0ooqkkpa4wv5" path="res://assets/images/game/tokens/Token4.png" id="11_rq0nh"]
 [ext_resource type="Texture2D" uid="uid://t6o8ftat683" path="res://assets/images/game/tokens/Token5.png" id="12_d510i"]
 [ext_resource type="Texture2D" uid="uid://cbjy2kmme3nsi" path="res://assets/images/game/tokens/Token6.png" id="13_op5ld"]
+[ext_resource type="Texture2D" uid="uid://ck57cvtovrq5g" path="res://assets/images/game/enemies/Commissar.png" id="13_x6agb"]
 [ext_resource type="Texture2D" uid="uid://dkiewyoyuc2iy" path="res://assets/images/game/tokens/Token7.png" id="14_hkrno"]
 [ext_resource type="Texture2D" uid="uid://ce1r4rq3l4wh8" path="res://assets/images/game/tokens/Token8.png" id="15_k7rx4"]
 [ext_resource type="Texture2D" uid="uid://clh4gpthkryk4" path="res://assets/images/game/tokens/Token9.png" id="16_du5dc"]
 [ext_resource type="Texture2D" uid="uid://ddygdq2xv7fab" path="res://assets/images/game/tokens/Token10.png" id="17_fnp7e"]
+[ext_resource type="Texture2D" uid="uid://c2m6tiv0w2tj2" path="res://assets/images/game/enemies/Devastator.png" id="18_54eya"]
 [ext_resource type="Texture2D" uid="uid://c45xry8ktxagi" path="res://assets/images/game/tokens/Token11.png" id="18_rubhh"]
 [ext_resource type="Texture2D" uid="uid://dbuudock08sqq" path="res://assets/images/game/tokens/Token12.png" id="19_8nqt2"]
 [ext_resource type="Texture2D" uid="uid://0l0r70mt3iny" path="res://assets/images/game/tokens/Token14.png" id="21_afp3v"]
 [ext_resource type="Texture2D" uid="uid://bjh84xqfrh5ox" path="res://assets/images/game/tokens/Token15.png" id="22_i6yii"]
+[ext_resource type="Texture2D" uid="uid://y8kiia6hlavy" path="res://assets/images/game/enemies/Hulk.png" id="22_jg1db"]
 [ext_resource type="Texture2D" uid="uid://br320k02e4qn4" path="res://assets/images/game/tokens/Token16.png" id="23_x20s8"]
 [ext_resource type="Texture2D" uid="uid://ca54thyryof1f" path="res://assets/images/game/enemies/Annihilator Tank.png" id="24_bw736"]
 [ext_resource type="Texture2D" uid="uid://beo4bwk6uhr0k" path="res://assets/images/game/tokens/Token17.png" id="24_jcblm"]
+[ext_resource type="Texture2D" uid="uid://dd067tghf1cfe" path="res://assets/images/game/enemies/Marauder.png" id="25_3f0pb"]
 [ext_resource type="Texture2D" uid="uid://d3mfmqvkaobdw" path="res://assets/images/game/tokens/Token18.png" id="25_8act8"]
 [ext_resource type="Texture2D" uid="uid://b5k4hqaa5fotf" path="res://assets/images/game/tokens/Token19.png" id="26_rmubo"]
 
@@ -170,6 +174,15 @@ offset_bottom = 330.0
 texture = ExtResource("9_8ak4x")
 expand_mode = 1
 
+[node name="EnemyMarauder1" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 818.0
+offset_top = 173.0
+offset_right = 975.0
+offset_bottom = 324.0
+texture = ExtResource("25_3f0pb")
+expand_mode = 1
+
 [node name="Token3" type="TextureRect" parent="background"]
 layout_mode = 0
 offset_left = 805.0
@@ -186,6 +199,15 @@ offset_top = 160.0
 offset_right = 1193.0
 offset_bottom = 331.0
 texture = ExtResource("11_rq0nh")
+expand_mode = 1
+
+[node name="EnemyCommissar1" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 1242.0
+offset_top = 175.0
+offset_right = 1399.0
+offset_bottom = 326.0
+texture = ExtResource("13_x6agb")
 expand_mode = 1
 
 [node name="Token5" type="TextureRect" parent="background"]
@@ -206,6 +228,15 @@ offset_bottom = 528.0
 texture = ExtResource("13_op5ld")
 expand_mode = 1
 
+[node name="EnemyMarauder2" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 607.0
+offset_top = 372.0
+offset_right = 764.0
+offset_bottom = 523.0
+texture = ExtResource("25_3f0pb")
+expand_mode = 1
+
 [node name="Token7" type="TextureRect" parent="background"]
 layout_mode = 0
 offset_left = 594.0
@@ -222,6 +253,15 @@ offset_top = 358.0
 offset_right = 980.0
 offset_bottom = 529.0
 texture = ExtResource("15_k7rx4")
+expand_mode = 1
+
+[node name="EnemyDevastator1" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 1028.0
+offset_top = 372.0
+offset_right = 1185.0
+offset_bottom = 523.0
+texture = ExtResource("18_54eya")
 expand_mode = 1
 
 [node name="Token9" type="TextureRect" parent="background"]
@@ -251,6 +291,15 @@ offset_bottom = 721.0
 texture = ExtResource("18_rubhh")
 expand_mode = 1
 
+[node name="EnemyHulk1" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 605.0
+offset_top = 564.0
+offset_right = 762.0
+offset_bottom = 715.0
+texture = ExtResource("22_jg1db")
+expand_mode = 1
+
 [node name="Token12" type="TextureRect" parent="background"]
 layout_mode = 0
 offset_left = 592.0
@@ -278,6 +327,15 @@ offset_bottom = 723.0
 texture = ExtResource("21_afp3v")
 expand_mode = 1
 
+[node name="EnemyCommissar2" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 1238.0
+offset_top = 569.0
+offset_right = 1395.0
+offset_bottom = 720.0
+texture = ExtResource("13_x6agb")
+expand_mode = 1
+
 [node name="Token15" type="TextureRect" parent="background"]
 layout_mode = 0
 offset_left = 1225.0
@@ -285,6 +343,15 @@ offset_top = 554.0
 offset_right = 1401.0
 offset_bottom = 725.0
 texture = ExtResource("22_i6yii")
+expand_mode = 1
+
+[node name="EnemyHulk2" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 395.0
+offset_top = 757.0
+offset_right = 552.0
+offset_bottom = 908.0
+texture = ExtResource("22_jg1db")
 expand_mode = 1
 
 [node name="Token16" type="TextureRect" parent="background"]
@@ -296,21 +363,21 @@ offset_bottom = 914.0
 texture = ExtResource("23_x20s8")
 expand_mode = 1
 
-[node name="EnemyTank1" type="TextureRect" parent="background"]
-layout_mode = 0
-offset_left = 608.0
-offset_top = 759.0
-offset_right = 765.0
-offset_bottom = 910.0
-texture = ExtResource("24_bw736")
-expand_mode = 1
-
 [node name="EnemyTank2" type="TextureRect" parent="background"]
 layout_mode = 0
 offset_left = 812.0
 offset_top = 763.0
 offset_right = 969.0
 offset_bottom = 914.0
+texture = ExtResource("24_bw736")
+expand_mode = 1
+
+[node name="EnemyTank1" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 608.0
+offset_top = 759.0
+offset_right = 765.0
+offset_bottom = 910.0
 texture = ExtResource("24_bw736")
 expand_mode = 1
 
@@ -330,6 +397,15 @@ offset_top = 744.0
 offset_right = 977.0
 offset_bottom = 915.0
 texture = ExtResource("25_8act8")
+expand_mode = 1
+
+[node name="EnemyDevastator2" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 1027.0
+offset_top = 758.0
+offset_right = 1184.0
+offset_bottom = 909.0
+texture = ExtResource("18_54eya")
 expand_mode = 1
 
 [node name="Token19" type="TextureRect" parent="background"]
