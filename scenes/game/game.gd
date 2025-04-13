@@ -149,9 +149,14 @@ func _on_token_gui_input(event: InputEvent, index: int) -> void:
 			preview_tweens.clear()
 
 func _on_mouse_entered_button(button: Control):
+	if not original_sizes.has(button):
+		return
 	_scale_token_to(button, original_sizes[button] * 1.2)
 
+
 func _on_mouse_exited_button(button: Control):
+	if not original_sizes.has(button):
+		return
 	if selected_strat_button != button:
 		_scale_token_to(button, original_sizes[button])
 
@@ -222,15 +227,28 @@ func _update_turn():
 	for strat in player.stratagems:
 		var button = TextureButton.new()
 		button.texture_normal = strat.icon
-		button.tooltip_text = strat.name + "\n" + strat.description
 		button.custom_minimum_size = Vector2(90, 105)
 		button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		button.pressed.connect(func(): _toggle_stratagem(strat, button))
-
-		button.connect("mouse_entered", Callable(self, "_on_mouse_entered_button").bind(button))
-		button.connect("mouse_exited", Callable(self, "_on_mouse_exited_button").bind(button))
 		original_sizes[button] = button.scale
+
+		# Cooldown logic
+		var in_cooldown = strat.cooldown_counter > 0 or (strat.name == "Reinforce" and player.reinforce_used)
+		button.modulate.a = 0.6 if in_cooldown else 1.0
+
+		# Tooltip
+		if strat.name == "Reinforce" and player.reinforce_used:
+			button.tooltip_text = "Already been used"
+		elif strat.cooldown_counter > 0:
+			button.tooltip_text = strat.name + "\n" + strat.description + "\nCooldown: " + str(strat.cooldown_counter) + " turn(s)"
+		else:
+			button.tooltip_text = strat.name + "\n" + strat.description
+
+		# Only allow interaction if available
+		if not in_cooldown:
+			button.pressed.connect(func(): _toggle_stratagem(strat, button))
+			button.connect("mouse_entered", Callable(self, "_on_mouse_entered_button").bind(button))
+			button.connect("mouse_exited", Callable(self, "_on_mouse_exited_button").bind(button))
 
 		stratagem_display.add_child(button)
 

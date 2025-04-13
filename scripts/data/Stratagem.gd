@@ -4,6 +4,7 @@ class_name Stratagem
 @export var name: String
 @export var description: String
 @export var cooldown: int = 1  # in turns
+var cooldown_counter: int = 0
 @export var damage: int = 1
 @export var icon: Texture2D
 @export var type: String  # e.g. "Explosion", "Napalm"
