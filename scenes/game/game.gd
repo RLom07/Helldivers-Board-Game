@@ -185,6 +185,9 @@ func _render_players():
 	for i in range(players.size()):
 		var color = Color.LIGHT_GREEN if i == current_player_index else Color.WHITE
 		var label = _create_label(players[i].name, 30, color)
+		if players[i].is_dead:
+			label.modulate.a = 0.5  # 50% opacity
+
 		player_list.add_child(label)
 		var spacer = Control.new()
 		spacer.custom_minimum_size = Vector2(0, 15)
@@ -324,7 +327,14 @@ func _on_stim_pressed():
 		stim_button.disabled = (player.stims <= 0)
 
 func _on_next_turn_pressed():
-	current_player_index = (current_player_index + 1) % players.size()
+	var attempts := 0
+	var total_players := players.size()
+	while attempts < total_players:
+		current_player_index = (current_player_index + 1) % total_players
+		if not players[current_player_index].is_dead:
+			break
+		attempts += 1
+
 	_update_turn()
 
 func _on_damage_pressed():
@@ -389,6 +399,12 @@ func _on_flight_result(success: bool, enemy: Enemy, player: Player, tile_index: 
 	else:
 		var attack = enemy.attacks[randi() % enemy.attacks.size()]
 		player.health = max(0, player.health - attack.damage)
+		if player.health <= 0:
+			player.is_dead = true
+			print("💀", player.name, "has died while fleeing!")
+			_next_alive_player()
+
+
 		update_health(player.health)
 		_show_flee_result(enemy, player, success, tile_index, tile_index)
 
@@ -429,6 +445,7 @@ func _show_fight_dice_roll(enemy: Enemy, tile_index: int):
 	fight_instance.dice_roll_result.connect(_on_dice_roll_result.bind(enemy, tile_index))
 
 func _on_dice_roll_result(damage: int, enemy: Enemy, tile_index: int) -> void:
+	var player = players[current_player_index]
 	enemy.health -= damage
 	print("🗡️", enemy.name, "takes", damage, "damage! Remaining HP:", enemy.health)
 
@@ -436,10 +453,19 @@ func _on_dice_roll_result(damage: int, enemy: Enemy, tile_index: int) -> void:
 	if is_defeated:
 		enemy.isdefeated = true
 		var token = enemy_tokens[tile_index]
-		token.modulate.a = 0.6  # Set opacity to 60%
+		token.modulate.a = 0.6  # 60% opacity
 		print("💀", enemy.name, "defeated!")
 
-	_show_combat_result(damage, is_defeated, enemy, tile_index)	
+	# Check if player died (e.g., from previous attack or special logic)
+	if player.health <= 0:
+		player.is_dead = true
+		print("💀", player.name, "has died!")
+		_next_alive_player()
+		return
+
+
+	_show_combat_result(damage, is_defeated, enemy, tile_index)
+
 
 func _show_combat_result(damage: int, is_defeated: bool, enemy: Enemy, tile_index: int) -> void:
 	var result_scene = preload("res://scenes/ui/CombatResult.tscn")
@@ -450,6 +476,12 @@ func _show_combat_result(damage: int, is_defeated: bool, enemy: Enemy, tile_inde
 
 	result_instance.continue_pressed.connect(func (_enemy, _tile_index):
 		update_health(player.health)
+
+		if player.health <= 0:
+			player.is_dead = true
+			print("💀", player.name, "has died!")
+			_next_alive_player()
+			return
 
 
 		if not _enemy.isdefeated:
@@ -527,3 +559,15 @@ func _create_enemies():
 
 	enemies.append(tank1)
 	enemies.append(tank2)
+
+func _next_alive_player():
+	var total_players := players.size()
+	var attempts := 0
+
+	while attempts < total_players:
+		current_player_index = (current_player_index + 1) % total_players
+		if not players[current_player_index].is_dead:
+			break
+		attempts += 1
+
+	_update_turn()

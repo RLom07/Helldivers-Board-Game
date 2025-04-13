@@ -8,3 +8,4 @@ var stratagems: Array = []
 var current_place: int = 1
 var reinforce_used := false
 var stims: int = 3
+var is_dead: bool = false
