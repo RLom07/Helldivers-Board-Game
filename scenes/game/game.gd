@@ -241,10 +241,15 @@ func _update_turn():
 	_render_players()
 
 func _toggle_stratagem(strat, button: TextureButton):
-	if selected_stratagem == strat:
-		_deselect_stratagem()
+	_deselect_stratagem()
+
+	if strat.name == "Reinforce":
+		var player = players[current_player_index]
+		if player.reinforce_used:
+			print("🚫", player.name, "has already used Reinforce.")
+			return
+		_show_reinforce_menu(player)
 	else:
-		_deselect_stratagem()
 		selected_stratagem = strat
 		selected_strat_button = button
 		_scale_token_to(button, original_sizes[button] * 1.2)
@@ -571,3 +576,54 @@ func _next_alive_player():
 		attempts += 1
 
 	_update_turn()
+
+func reinforce_player(from_player: Player, to_player: Player):
+	if from_player.reinforce_used:
+		print(from_player.name, "has already used their reinforcement.")
+		return
+
+	if not to_player.is_dead:
+		print(to_player.name, "is not dead!")
+		return
+
+	# ✅ Play voice line
+	var audio = AudioStreamPlayer.new()
+	audio.stream = preload("res://assets/voice_lines/Helldiver KIA, deploying replacement.mp3")
+	add_child(audio)
+	audio.play()
+
+	# ✅ Revive logic
+	to_player.is_dead = false
+	from_player.reinforce_used = true
+	to_player.health = 100
+	print("🛬", from_player.name, "reinforced", to_player.name)
+
+	_update_turn()
+	_render_players()
+
+func _show_reinforce_menu(from_player: Player):
+	var popup := PopupMenu.new()
+	popup.name = "ReinforceMenu"
+
+	for i in range(players.size()):
+		if players[i].is_dead:
+			popup.add_item(players[i].name, i)
+
+	if popup.item_count == 0:
+		print("🛡️ No dead players to reinforce.")
+		return
+
+	# ✅ Correct way to connect signal
+	popup.connect("id_pressed", Callable(self, "_on_reinforce_selected").bind(from_player, popup))
+
+	add_child(popup)
+	popup.popup_centered()
+
+func _on_reinforce_selected(id: int, from_player: Player, popup: PopupMenu):
+	var to_player: Player = players[id]
+	reinforce_player(from_player, to_player)
+
+	# Clean up the popup
+	if is_instance_valid(popup):
+		remove_child(popup)
+		popup.queue_free()
