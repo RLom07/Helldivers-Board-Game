@@ -29,6 +29,7 @@ extends Control
 var players = []
 var current_player_index := 0
 var original_sizes := {}
+var round_turn_counter := 0
 
 var selected_stratagem = null
 var selected_strat_button = null
@@ -97,7 +98,6 @@ func _on_token_mouse_exited(index: int) -> void:
 	_reset_preview_tiles()
 
 func _on_token_gui_input(event: InputEvent, index: int) -> void:
-	var token = tokens[index]
 	if event is InputEventMouseButton and event.pressed:
 		var player = players[current_player_index]
 		var current_tile: int = player.current_place
@@ -111,11 +111,19 @@ func _on_token_gui_input(event: InputEvent, index: int) -> void:
 						_fade_out_token(tokens[i])
 					else:
 						_reset_tile_scale(tokens[i])
+
 				print("💣 Tile", target_tile + 1, "hit by", selected_stratagem.name)
+
+				# Set cooldown AFTER use
+				if selected_stratagem.name != "Reinforce":
+					selected_stratagem.cooldown_counter = selected_stratagem.cooldown
+
 				_deselect_stratagem()
+				_update_turn()
 			else:
 				print("❌ Out of range")
 		else:
+			# No stratagem selected: Move the player
 			player.current_place = index
 
 			if enemy_tokens.has(index):
@@ -131,22 +139,22 @@ func _on_token_gui_input(event: InputEvent, index: int) -> void:
 
 			_update_turn()
 
-			# 🔁 FULL HOVER/PULSE RESET (tokens + enemy_tokens)
-			for i in range(tokens.size()):
-				var tok = tokens[i]
-				if preview_tweens.has(tok):
-					preview_tweens[tok].kill()
-				if original_sizes.has(tok):
-					tok.scale = original_sizes[tok]
+		# 🔁 Reset visual hover effects
+		for i in range(tokens.size()):
+			var tok = tokens[i]
+			if preview_tweens.has(tok):
+				preview_tweens[tok].kill()
+			if original_sizes.has(tok):
+				tok.scale = original_sizes[tok]
 
-			for idx in enemy_tokens:
-				var tok = enemy_tokens[idx]
-				if preview_tweens.has(tok):
-					preview_tweens[tok].kill()
-				if original_sizes.has(tok):
-					tok.scale = original_sizes[tok]
+		for idx in enemy_tokens:
+			var tok = enemy_tokens[idx]
+			if preview_tweens.has(tok):
+				preview_tweens[tok].kill()
+			if original_sizes.has(tok):
+				tok.scale = original_sizes[tok]
 
-			preview_tweens.clear()
+		preview_tweens.clear()
 
 func _on_mouse_entered_button(button: Control):
 	if not original_sizes.has(button):
@@ -232,11 +240,13 @@ func _update_turn():
 		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		original_sizes[button] = button.scale
 
-		# Cooldown logic
+		# Determine if the stratagem is in cooldown or used (for Reinforce)
 		var in_cooldown = strat.cooldown_counter > 0 or (strat.name == "Reinforce" and player.reinforce_used)
+
+		# Set opacity based on cooldown
 		button.modulate.a = 0.6 if in_cooldown else 1.0
 
-		# Tooltip
+		# Set tooltip based on cooldown or Reinforce usage
 		if strat.name == "Reinforce" and player.reinforce_used:
 			button.tooltip_text = "Already been used"
 		elif strat.cooldown_counter > 0:
@@ -244,7 +254,7 @@ func _update_turn():
 		else:
 			button.tooltip_text = strat.name + "\n" + strat.description
 
-		# Only allow interaction if available
+		# Only allow interaction if it's not in cooldown or already used
 		if not in_cooldown:
 			button.pressed.connect(func(): _toggle_stratagem(strat, button))
 			button.connect("mouse_entered", Callable(self, "_on_mouse_entered_button").bind(button))
@@ -259,14 +269,22 @@ func _update_turn():
 	_render_players()
 
 func _toggle_stratagem(strat, button: TextureButton):
+	# If the same stratagem is clicked again, deselect it
+	if selected_stratagem == strat:
+		_deselect_stratagem()
+		return
+
 	_deselect_stratagem()
 
+	var player = players[current_player_index]
+
 	if strat.name == "Reinforce":
-		var player = players[current_player_index]
 		if player.reinforce_used:
 			print("🚫", player.name, "has already used Reinforce.")
 			return
 		_show_reinforce_menu(player)
+		player.reinforce_used = true  # Reinforce is consumed immediately
+		_update_turn()
 	else:
 		selected_stratagem = strat
 		selected_strat_button = button
@@ -350,13 +368,24 @@ func _on_stim_pressed():
 		stim_button.disabled = (player.stims <= 0)
 
 func _on_next_turn_pressed():
-	var attempts := 0
+	var previous_index = current_player_index
 	var total_players := players.size()
+
+	# Zoek de volgende levende speler
+	var attempts := 0
 	while attempts < total_players:
 		current_player_index = (current_player_index + 1) % total_players
 		if not players[current_player_index].is_dead:
 			break
 		attempts += 1
+
+	# ✅ Vergelijk: als we weer bij dezelfde (levende) speler uitkomen, is een volledige ronde voorbij
+	if current_player_index < previous_index or (current_player_index == 0 and previous_index == total_players - 1):
+		print("🔁 Full round completed! Decreasing cooldowns...")
+		for player in players:
+			for strat in player.stratagems:
+				if strat.cooldown_counter > 0:
+					strat.cooldown_counter -= 1
 
 	_update_turn()
 
