@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bip06na4k1s53"
+path="res://.godot/imported/Democracy Officer - Democracy prevails once more.mp3-bdef4f0af8d38203accc5516764f1073.mp3str"
+
+[deps]
+
+source_file="res://assets/voice_lines/Democracy Officer - Democracy prevails once more.mp3"
+dest_files=["res://.godot/imported/Democracy Officer - Democracy prevails once more.mp3-bdef4f0af8d38203accc5516764f1073.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

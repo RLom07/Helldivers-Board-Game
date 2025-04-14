@@ -1,0 +1,48 @@
+[gd_scene load_steps=4 format=3 uid="uid://dqcqfpym2wbit"]
+
+[ext_resource type="Script" path="res://scenes/ui/ExtractionCountdown.gd" id="1_122px"]
+[ext_resource type="Texture2D" uid="uid://doyw1x000mfn3" path="res://assets/images/stratagems/Rectangle 44.png" id="2_swpsh"]
+[ext_resource type="Texture2D" uid="uid://idi528cf7qqb" path="res://assets/images/game/Extraction_Zone_Icon.webp" id="3_6ldqk"]
+
+[node name="ExtractionCountdown" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_122px")
+
+[node name="background" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 472.0
+offset_top = 256.0
+offset_right = 1328.0
+offset_bottom = 698.0
+texture = ExtResource("2_swpsh")
+expand_mode = 1
+
+[node name="ExtractionToken" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 339.0
+offset_top = 18.0
+offset_right = 499.0
+offset_bottom = 178.0
+texture = ExtResource("3_6ldqk")
+expand_mode = 1
+
+[node name="CountdownLabel" type="Label" parent="background"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 201.0
+offset_right = 827.0
+offset_bottom = 310.0
+theme_override_font_sizes/font_size = 38
+text = "Extraction arrives in X turns!
+"
+horizontal_alignment = 1
+
+[node name="ContinueButton" type="Button" parent="background"]
+layout_mode = 0
+offset_left = 312.0
+offset_top = 302.0
+offset_right = 540.0
+offset_bottom = 379.0
+theme_override_font_sizes/font_size = 50
+text = "Continue"

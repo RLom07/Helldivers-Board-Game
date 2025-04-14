@@ -56,6 +56,12 @@ var mission_complete := false
 var mission_random_enemy: Enemy = null
 var is_mission_combat := false
 
+# Extraction logic
+var extraction_tile_index := 19 
+var extraction_active := false
+var extraction_turns_remaining := -1
+var extraction_triggered_by: Player = null
+
 func _ready():
 	randomize()
 	players = PlayerManager.players.duplicate()
@@ -150,7 +156,7 @@ func _on_token_gui_input(event: InputEvent, index: int) -> void:
 					await get_tree().create_timer(2.0).timeout
 					_show_enemy_encounter(enemy)
 			else:
-				if index != mission_tile_index:
+				if index != mission_tile_index and index != extraction_tile_index:
 					_fade_out_token(tokens[index])
 
 			_update_turn()
@@ -301,6 +307,25 @@ func _update_turn():
 
 	_render_players()
 	_check_mission_tile_logic(players[current_player_index])
+	_check_extraction_tile_logic(player)
+	
+func _show_extraction_countdown():
+	var scene = preload("res://scenes/ui/ExtractionCountdown.tscn")
+	var instance = scene.instantiate()
+	add_child(instance)
+	instance.setup(extraction_turns_remaining)
+	instance.continue_pressed.connect(func():
+		print("✅ Extraction countdown acknowledged.")
+	)
+	print("📢 Showing extraction countdown to", players[current_player_index].name)
+
+func _check_extraction_tile_logic(player: Player):
+	if extraction_active or player.is_dead:
+		return
+
+	if player.current_place == extraction_tile_index:
+		_show_extraction_prompt()
+
 
 func _toggle_stratagem(strat, button: TextureButton):
 	# If the same stratagem is clicked again, deselect it
@@ -413,9 +438,22 @@ func _on_next_turn_pressed():
 			break
 		attempts += 1
 
+	# ✅ Show extraction countdown if it's the activating player's turn
+	if extraction_active and players[current_player_index] == extraction_triggered_by:
+		_show_extraction_countdown()
+
 	# ✅ Volledige ronde afgelopen
 	if current_player_index < previous_index or (current_player_index == 0 and previous_index == total_players - 1):
 		print("🔁 Full round completed! Decreasing cooldowns...")
+
+		if extraction_active:
+			extraction_turns_remaining -= 1
+			print("📉 Extraction turns remaining:", extraction_turns_remaining)
+
+			if extraction_turns_remaining <= 0:
+				print("🚁 Extraction has arrived! Handling endgame...")
+				_handle_extraction_end()
+				return  # Stop further turn progression
 
 		for player in players:
 			for strat in player.stratagems:
@@ -450,8 +488,6 @@ func _on_next_turn_pressed():
 				await get_tree().create_timer(1.5).timeout
 				_show_enemy_encounter(random_enemy)
 
-
-
 				if mission_player.health <= 0:
 					mission_player.is_dead = true
 					print("💀", mission_player.name, "died during mission!")
@@ -465,11 +501,6 @@ func _on_next_turn_pressed():
 						mission_player = null
 						print("❌ No players left on mission tile. Mission halted.")
 
-					if mission_player:
-						print("🆕 New mission player after death:", mission_player.name)
-					else:
-						print("❌ No players left on mission tile. Mission halted.")
-				
 				update_health(players[current_player_index].health)
 
 	_update_turn()
@@ -960,3 +991,76 @@ func _play_voice_line(path: String):
 	add_child(audio)
 	audio.play()
 	audio.connect("finished", Callable(audio, "queue_free"))
+
+func _show_extraction_prompt():
+	var scene = preload("res://scenes/ui/ExtractionPrompt.tscn")
+	var instance = scene.instantiate()
+	add_child(instance)
+	instance.extraction_choice_made.connect(_on_extraction_choice)
+
+	
+func _on_extraction_choice(choice: bool):
+	if choice:
+		extraction_active = true
+		extraction_turns_remaining = players.size()  # Everyone gets one more round
+		extraction_triggered_by = players[current_player_index]
+
+		# Stop current music
+		for node in get_children():
+			if node is AudioStreamPlayer and node.playing:
+				node.stop()
+
+		# Start extraction music
+		var music = AudioStreamPlayer.new()
+		music.stream = preload("res://assets/music/algemeen/Extraction.mp3")
+		add_child(music)
+		music.play()
+
+		print("🚁 Extraction initiated by", extraction_triggered_by.name)
+	else:
+		print("🛑 Extraction canceled. Player chose to continue normally.")
+
+func _handle_extraction_end():
+	var escaped_players = []
+	var left_behind_players = []
+
+	for player in players:
+		if player.current_place == extraction_tile_index and not player.is_dead:
+			escaped_players.append(player.name)
+		elif not player.is_dead:
+			left_behind_players.append(player.name)
+
+	var message := "✅ Extraction Success!\n\nEscaped:\n" + str(escaped_players) + "\n\nLeft Behind:\n" + str(left_behind_players)
+	print(message)
+
+	# Optional: show message on screen while the music and voice play
+	var label = _create_label(message, 24, Color.WHITE)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	add_child(label)
+
+	next_turn_button.disabled = true  # Freeze game input
+
+	# 🎵 Stop any currently playing music
+	for node in get_children():
+		if node is AudioStreamPlayer and node.playing:
+			node.stop()
+
+	# 🎵 Play extraction success music
+	var music = AudioStreamPlayer.new()
+	music.stream = preload("res://assets/music/algemeen/Extraction successfull.mp3")
+	add_child(music)
+	music.play()
+
+	# 🕒 Wait 6 seconds, then play voice line
+	await get_tree().create_timer(6.0).timeout
+	var voice = AudioStreamPlayer.new()
+	voice.stream = preload("res://assets/voice_lines/Democracy Officer - Democracy prevails once more.mp3")
+	add_child(voice)
+	voice.play()
+
+	# 🕒 Wait 8 more seconds (14 total), then change scene
+	await get_tree().create_timer(8.0).timeout
+	get_tree().change_scene_to_file("res://scenes/endScene/EndScene.tscn")  # ← update if you use a different path

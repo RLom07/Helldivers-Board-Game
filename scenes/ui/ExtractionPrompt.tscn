@@ -1,0 +1,58 @@
+[gd_scene load_steps=4 format=3 uid="uid://d4nv4nmlaxju2"]
+
+[ext_resource type="Script" path="res://scenes/ui/ExtractionPrompt.gd" id="1_nhhwf"]
+[ext_resource type="Texture2D" uid="uid://doyw1x000mfn3" path="res://assets/images/stratagems/Rectangle 44.png" id="2_mj6s0"]
+[ext_resource type="Texture2D" uid="uid://idi528cf7qqb" path="res://assets/images/game/Extraction_Zone_Icon.webp" id="3_1ugc0"]
+
+[node name="ExtractionPrompt" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_nhhwf")
+
+[node name="background" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 472.0
+offset_top = 256.0
+offset_right = 1328.0
+offset_bottom = 698.0
+texture = ExtResource("2_mj6s0")
+expand_mode = 1
+
+[node name="Enemytoken" type="TextureRect" parent="background"]
+layout_mode = 0
+offset_left = 339.0
+offset_top = 18.0
+offset_right = 499.0
+offset_bottom = 178.0
+texture = ExtResource("3_1ugc0")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="background"]
+layout_mode = 0
+offset_left = 36.0
+offset_top = 179.0
+offset_right = 831.0
+offset_bottom = 288.0
+theme_override_font_sizes/font_size = 38
+text = "Do you wish to activate extraction?
+⚠️Everyone needs to be at the extraction 
+Zone when 3 rounds end!"
+horizontal_alignment = 1
+
+[node name="Yes" type="Button" parent="background"]
+layout_mode = 0
+offset_left = 197.0
+offset_top = 352.0
+offset_right = 325.0
+offset_bottom = 429.0
+theme_override_font_sizes/font_size = 50
+text = "Yes"
+
+[node name="No" type="Button" parent="background"]
+layout_mode = 0
+offset_left = 503.0
+offset_top = 352.0
+offset_right = 645.0
+offset_bottom = 429.0
+theme_override_font_sizes/font_size = 50
+text = "No"
