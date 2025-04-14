@@ -53,7 +53,8 @@ var mission_tile_index = 12
 var mission_player: Player = null
 var mission_turns_remaining := 3
 var mission_complete := false
-
+var mission_random_enemy: Enemy = null
+var is_mission_combat := false
 
 func _ready():
 	randomize()
@@ -412,13 +413,64 @@ func _on_next_turn_pressed():
 			break
 		attempts += 1
 
-	# ✅ Vergelijk: als we weer bij dezelfde (levende) speler uitkomen, is een volledige ronde voorbij
+	# ✅ Volledige ronde afgelopen
 	if current_player_index < previous_index or (current_player_index == 0 and previous_index == total_players - 1):
 		print("🔁 Full round completed! Decreasing cooldowns...")
+
 		for player in players:
 			for strat in player.stratagems:
 				if strat.cooldown_counter > 0:
 					strat.cooldown_counter -= 1
+
+		# ✅ Missie-aanval: als missie actief is en spelers op de tegel staan
+		if not mission_complete:
+			var players_on_tile := players.filter(func(p): return p.current_place == mission_tile_index and not p.is_dead)
+
+			if players_on_tile.size() > 0:
+				# Als huidige missie speler niet op de tegel staat, wissel
+				if not players_on_tile.has(mission_player):
+					mission_player = players_on_tile[0]
+					print("🔄 New mission player:", mission_player.name)
+
+				# Start full combat with a random enemy on the mission tile
+				var base_enemy: Enemy = mission_enemies[randi() % mission_enemies.size()]
+				var random_enemy: Enemy = Enemy.new()
+				random_enemy.name = base_enemy.name
+				random_enemy.health = base_enemy.health
+				random_enemy.attacks = base_enemy.attacks.duplicate()
+				random_enemy.weakness = base_enemy.weakness
+				random_enemy.resistance = base_enemy.resistance
+
+				print("⚔️ Mission combat triggered against:", random_enemy.name)
+
+				# Save the enemy so we can handle it properly in the encounter
+				mission_random_enemy = random_enemy
+				is_mission_combat = true
+
+				await get_tree().create_timer(1.5).timeout
+				_show_enemy_encounter(random_enemy)
+
+
+
+				if mission_player.health <= 0:
+					mission_player.is_dead = true
+					print("💀", mission_player.name, "died during mission!")
+
+					# Probeer nieuwe missie speler aan te wijzen
+					var still_on_tile := players.filter(func(p): return p.current_place == mission_tile_index and not p.is_dead)
+					if still_on_tile.size() > 0:
+						mission_player = still_on_tile[0]
+						print("🆕 New mission player after death:", mission_player.name)
+					else:
+						mission_player = null
+						print("❌ No players left on mission tile. Mission halted.")
+
+					if mission_player:
+						print("🆕 New mission player after death:", mission_player.name)
+					else:
+						print("❌ No players left on mission tile. Mission halted.")
+				
+				update_health(players[current_player_index].health)
 
 	_update_turn()
 
@@ -437,11 +489,16 @@ func _on_tank_encounter_choice(choice: String) -> void:
 	var player = players[current_player_index]
 	var tile_index: int = player.current_place
 
-	if not enemy_tile_map.has(tile_index):
-		print("⚠️ No enemy found on tile", tile_index)
-		return
+	var enemy: Enemy
 
-	var enemy: Enemy = enemy_tile_map[tile_index]
+	if is_mission_combat:
+		enemy = mission_random_enemy
+	else:
+		if not enemy_tile_map.has(tile_index):
+			print("⚠️ No enemy found on tile", tile_index)
+			return
+		enemy = enemy_tile_map[tile_index]
+
 
 	if choice == "fight":
 		_show_fight_dice_roll(enemy, tile_index)
@@ -518,7 +575,7 @@ func _find_safe_tile() -> int:
 
 func _show_enemy_encounter(enemy: Enemy):
 	var scene_path := ""
-	match enemy.name:
+	match String(enemy.name):  # <-- 🔧 This fixes your mission combat bug!
 		"Annihilator Tank":
 			scene_path = "res://scenes/ui/TankEncounter.tscn"
 		"Commissar":
@@ -532,6 +589,14 @@ func _show_enemy_encounter(enemy: Enemy):
 		_:
 			print("⚠️ No encounter scene for", enemy.name)
 			return
+		
+	var ENEMY_SCENE_PATHS = {
+	"Annihilator Tank": "res://scenes/ui/TankEncounter.tscn",
+	"Commissar": "res://scenes/ui/CommissarEncounter.tscn",
+	"Devastator": "res://scenes/ui/DevastatorEncounter.tscn",
+	"Hulk": "res://scenes/ui/HulkEncounter.tscn",
+	"Marauder": "res://scenes/ui/MarauderEncounter.tscn"
+	}
 
 	var encounter_scene = load(scene_path)
 	var encounter_instance = encounter_scene.instantiate()
@@ -553,9 +618,11 @@ func _on_dice_roll_result(damage: int, enemy: Enemy, tile_index: int) -> void:
 	var is_defeated = enemy.health <= 0
 	if is_defeated:
 		enemy.isdefeated = true
-		var token = enemy_tokens[tile_index]
-		token.modulate.a = 0.6  # 60% opacity
+		if not is_mission_combat and enemy_tokens.has(tile_index):
+			var token = enemy_tokens[tile_index]
+			token.modulate.a = 0.6  # 60% opacity
 		print("💀", enemy.name, "defeated!")
+
 
 	# Check if player died (e.g., from previous attack or special logic)
 	if player.health <= 0:
@@ -590,6 +657,8 @@ func _show_combat_result(damage: int, is_defeated: bool, enemy: Enemy, tile_inde
 		else:
 			print("✅ Combat over.")
 	)
+
+var mission_enemies: Array = []
 
 func _create_enemies():
 	# Tanks (already done correctly)
@@ -696,6 +765,49 @@ func _create_enemies():
 	]
 	marauder2.weakness = "Explosive"
 	marauder2.resistance = "Electric"
+	
+	# === ADD MISSION-ONLY ENEMIES ===
+	var mission_commissar1 = Enemy.new()
+	mission_commissar1.name = "Commissar"
+	mission_commissar1.health = 180
+	mission_commissar1.attacks = commissar1.attacks.duplicate()
+	mission_commissar1.weakness = "Fire"
+	mission_commissar1.resistance = "Piercing"
+
+	var mission_commissar2 = Enemy.new()
+	mission_commissar2.name = "Commissar"
+	mission_commissar2.health = 180
+	mission_commissar2.attacks = commissar1.attacks.duplicate()
+	mission_commissar2.weakness = "Fire"
+	mission_commissar2.resistance = "Piercing"
+
+	var mission_devastator1 = Enemy.new()
+	mission_devastator1.name = "Devastator"
+	mission_devastator1.health = 250
+	mission_devastator1.attacks = devastator1.attacks.duplicate()
+	mission_devastator1.weakness = "Electric"
+	mission_devastator1.resistance = "Fire"
+
+	var mission_devastator2 = Enemy.new()
+	mission_devastator2.name = "Devastator"
+	mission_devastator2.health = 250
+	mission_devastator2.attacks = devastator1.attacks.duplicate()
+	mission_devastator2.weakness = "Electric"
+	mission_devastator2.resistance = "Fire"
+
+	var mission_marauder1 = Enemy.new()
+	mission_marauder1.name = "Marauder"
+	mission_marauder1.health = 150
+	mission_marauder1.attacks = marauder1.attacks.duplicate()
+	mission_marauder1.weakness = "Explosive"
+	mission_marauder1.resistance = "Electric"
+
+	var mission_marauder2 = Enemy.new()
+	mission_marauder2.name = "Marauder"
+	mission_marauder2.health = 150
+	mission_marauder2.attacks = marauder1.attacks.duplicate()
+	mission_marauder2.weakness = "Explosive"
+	mission_marauder2.resistance = "Electric"
 
 	# Add to enemy list (for debug/statistics)
 	enemies.append_array([
@@ -704,6 +816,12 @@ func _create_enemies():
 		devastator1, devastator2,
 		hulk1, hulk2,
 		marauder1, marauder2
+	])
+	
+	mission_enemies.append_array([
+		mission_commissar1, mission_commissar2,
+		mission_devastator1, mission_devastator2,
+		mission_marauder1, mission_marauder2
 	])
 
 	# Assign to enemy tiles
@@ -804,14 +922,15 @@ func _check_mission_tile_logic(player: Player):
 		return
 
 	if player.current_place == mission_tile_index:
-		# Player just landed on the mission tile
+		var players_on_tile := players.filter(func(p): return p.current_place == mission_tile_index and not p.is_dead)
+
 		if mission_player == null:
 			mission_player = player
 			mission_turns_remaining = 3
 			print("🛟", player.name, "started the evacuation mission!")
 			_play_voice_line("res://assets/voice_lines/Important personnel - Sweet liberty, its the helldivers.mp3")
+
 		elif player == mission_player:
-			# Same player still on tile
 			mission_turns_remaining -= 1
 			print("🚨", player.name, "survived another turn on mission tile. Remaining:", mission_turns_remaining)
 			_play_voice_line("res://assets/voice_lines/Important personnel - Sweet liberty, its the helldivers.mp3")
@@ -821,15 +940,19 @@ func _check_mission_tile_logic(player: Player):
 				print("✅ Mission completed by", player.name)
 				_play_voice_line("res://assets/music/algemeen/#Objective completed music 2.mp3")
 				tokens[mission_tile_index].modulate.a = 0.6
-		else:
-			# Other players on tile (not mission leader)
+
+		elif mission_player != null:
 			print("👥", player.name, "is supporting the mission.")
 	else:
-		# Mission player stepped off
 		if player == mission_player:
-			print("🏃", player.name, "fled the mission tile. Resetting mission.")
-			mission_player = null
-			mission_turns_remaining = 3
+			var others_on_tile := players.filter(func(p): return p != player and p.current_place == mission_tile_index and not p.is_dead)
+			if others_on_tile.size() > 0:
+				mission_player = others_on_tile[0]
+				print("🔄 Mission player switched to", mission_player.name)
+			else:
+				print("🏃", player.name, "fled the mission tile. Resetting mission.")
+				mission_player = null
+				mission_turns_remaining = 3
 
 func _play_voice_line(path: String):
 	var audio = AudioStreamPlayer.new()
