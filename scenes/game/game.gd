@@ -48,6 +48,13 @@ var preview_tweens := {}
 var enemies: Array = []
 var enemy_tile_map: Dictionary = {}
 
+#Mission
+var mission_tile_index = 12
+var mission_player: Player = null
+var mission_turns_remaining := 3
+var mission_complete := false
+
+
 func _ready():
 	randomize()
 	players = PlayerManager.players.duplicate()
@@ -119,9 +126,6 @@ func _on_token_gui_input(event: InputEvent, index: int) -> void:
 				else:
 					_apply_stratagem_to_tiles(selected_stratagem, affected)
 
-
-
-
 				print("💣 Tile", target_tile + 1, "hit by", selected_stratagem.name)
 
 				# Set cooldown AFTER use
@@ -144,11 +148,12 @@ func _on_token_gui_input(event: InputEvent, index: int) -> void:
 				if enemy and not enemy.isdefeated:
 					await get_tree().create_timer(2.0).timeout
 					_show_enemy_encounter(enemy)
-
 			else:
-				_fade_out_token(tokens[index])
+				if index != mission_tile_index:
+					_fade_out_token(tokens[index])
 
 			_update_turn()
+
 
 		# 🔁 Reset visual hover effects
 		for i in range(tokens.size()):
@@ -294,6 +299,7 @@ func _update_turn():
 		stratagem_display.add_child(spacer)
 
 	_render_players()
+	_check_mission_tile_logic(players[current_player_index])
 
 func _toggle_stratagem(strat, button: TextureButton):
 	# If the same stratagem is clicked again, deselect it
@@ -737,7 +743,7 @@ func reinforce_player(from_player: Player, to_player: Player):
 
 	# ✅ Play voice line
 	var audio = AudioStreamPlayer.new()
-	audio.stream = preload("res://assets/voice_lines/Helldiver KIA, deploying replacement.mp3")
+	audio.stream = preload("res://assets/voice_lines/Reinforcementslauched.mp3")
 	add_child(audio)
 	audio.play()
 
@@ -792,3 +798,42 @@ func _show_stratagem_impact(hidden_count: int, revealed_enemies: Array):
 		print("✅ Player continues after impact message.")
 		instance.queue_free()
 	)
+
+func _check_mission_tile_logic(player: Player):
+	if mission_complete:
+		return
+
+	if player.current_place == mission_tile_index:
+		# Player just landed on the mission tile
+		if mission_player == null:
+			mission_player = player
+			mission_turns_remaining = 3
+			print("🛟", player.name, "started the evacuation mission!")
+			_play_voice_line("res://assets/voice_lines/Important personnel - Sweet liberty, its the helldivers.mp3")
+		elif player == mission_player:
+			# Same player still on tile
+			mission_turns_remaining -= 1
+			print("🚨", player.name, "survived another turn on mission tile. Remaining:", mission_turns_remaining)
+			_play_voice_line("res://assets/voice_lines/Important personnel - Sweet liberty, its the helldivers.mp3")
+
+			if mission_turns_remaining <= 0:
+				mission_complete = true
+				print("✅ Mission completed by", player.name)
+				_play_voice_line("res://assets/music/algemeen/#Objective completed music 2.mp3")
+				tokens[mission_tile_index].modulate.a = 0.6
+		else:
+			# Other players on tile (not mission leader)
+			print("👥", player.name, "is supporting the mission.")
+	else:
+		# Mission player stepped off
+		if player == mission_player:
+			print("🏃", player.name, "fled the mission tile. Resetting mission.")
+			mission_player = null
+			mission_turns_remaining = 3
+
+func _play_voice_line(path: String):
+	var audio = AudioStreamPlayer.new()
+	audio.stream = load(path)
+	add_child(audio)
+	audio.play()
+	audio.connect("finished", Callable(audio, "queue_free"))
