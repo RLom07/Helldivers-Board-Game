@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bmo8kntr5cxva"
+path="res://.godot/imported/Democracy officer - Our heroes have fallen, but their bodies shall be replaced and their losses restored (1).mp3-aae0f1e12bfc1b769d89b80627b5f879.mp3str"
+
+[deps]
+
+source_file="res://assets/voice_lines/Democracy officer - Our heroes have fallen, but their bodies shall be replaced and their losses restored (1).mp3"
+dest_files=["res://.godot/imported/Democracy officer - Our heroes have fallen, but their bodies shall be replaced and their losses restored (1).mp3-aae0f1e12bfc1b769d89b80627b5f879.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

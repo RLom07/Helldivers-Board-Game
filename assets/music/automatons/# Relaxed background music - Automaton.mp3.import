@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bfduv3frep01u"
+path="res://.godot/imported/# Relaxed background music - Automaton.mp3-773cd64ba3a0494bc8d6ef1b8cd16377.mp3str"
+
+[deps]
+
+source_file="res://assets/music/automatons/# Relaxed background music - Automaton.mp3"
+dest_files=["res://.godot/imported/# Relaxed background music - Automaton.mp3-773cd64ba3a0494bc8d6ef1b8cd16377.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

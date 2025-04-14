@@ -129,7 +129,9 @@ func _on_token_gui_input(event: InputEvent, index: int) -> void:
 				var affected = _get_affected_tiles(selected_stratagem, target_tile)
 				if selected_stratagem.type == "Scan":
 					for i in affected:
-						_fade_out_token(tokens[i])
+						if i != mission_tile_index and i != extraction_tile_index:
+							_fade_out_token(tokens[i])
+
 				else:
 					_apply_stratagem_to_tiles(selected_stratagem, affected)
 
@@ -184,6 +186,18 @@ func _apply_stratagem_to_tiles(strat, tiles: Array):
 		return
 
 	var result = strat.process_attack(tiles as Array[int], players, enemy_tile_map)
+
+	# Apply friendly fire damage to players on affected tiles
+	for tile_index in tiles:
+		for player in players:
+			if player.current_place == tile_index and not player.is_dead:
+				player.health = max(0, player.health - 25)
+				print("💥 Friendly fire! ", player.name, " took 25 damage from ", strat.name, " on tile", tile_index + 1)
+				if player.health <= 0:
+					player.is_dead = true
+					print("💀", player.name, "was killed by friendly fire!")
+				if players[current_player_index] == player:
+					update_health(player.health)
 
 	# Update visuals and defeated tokens
 	for i in result["defeated_tiles"]:
@@ -438,6 +452,11 @@ func _on_next_turn_pressed():
 			break
 		attempts += 1
 
+	# ✅ Check if all Helldivers are dead
+	if players.all(func(p): return p.is_dead):
+		_handle_game_over_all_dead()
+		return
+
 	# ✅ Show extraction countdown if it's the activating player's turn
 	if extraction_active and players[current_player_index] == extraction_triggered_by:
 		_show_extraction_countdown()
@@ -455,6 +474,7 @@ func _on_next_turn_pressed():
 				_handle_extraction_end()
 				return  # Stop further turn progression
 
+		# 🔃 Cooldowns
 		for player in players:
 			for strat in player.stratagems:
 				if strat.cooldown_counter > 0:
@@ -662,9 +682,7 @@ func _on_dice_roll_result(damage: int, enemy: Enemy, tile_index: int) -> void:
 		_next_alive_player()
 		return
 
-
 	_show_combat_result(damage, is_defeated, enemy, tile_index)
-
 
 func _show_combat_result(damage: int, is_defeated: bool, enemy: Enemy, tile_index: int) -> void:
 	var result_scene = preload("res://scenes/ui/CombatResult.tscn")
@@ -1064,3 +1082,28 @@ func _handle_extraction_end():
 	# 🕒 Wait 8 more seconds (14 total), then change scene
 	await get_tree().create_timer(8.0).timeout
 	get_tree().change_scene_to_file("res://scenes/endScene/EndScene.tscn")  # ← update if you use a different path
+
+func _handle_game_over_all_dead():
+	print("☠️ All Helldivers are dead. Mission failed.")
+
+	# 🔇 Stop all current music
+	for node in get_children():
+		if node is AudioStreamPlayer and node.playing:
+			node.stop()
+
+	# 🎵 Play Game Over music
+	var music = AudioStreamPlayer.new()
+	music.stream = preload("res://assets/music/automatons/# Relaxed background music - Automaton.mp3")
+	add_child(music)
+	music.play()
+
+	# 🗣️ After 2 seconds: play voice line
+	await get_tree().create_timer(2).timeout
+	var voice = AudioStreamPlayer.new()
+	voice.stream = preload("res://assets/voice_lines/Democracy officer - Our heroes have fallen, but their bodies shall be replaced and their losses restored (1).mp3")
+	add_child(voice)
+	voice.play()
+
+	# ⏭️ After 8 more seconds: go to GameOver scene
+	await get_tree().create_timer(8).timeout
+	get_tree().change_scene_to_file("res://scenes/gameOver/Gameover.tscn")
