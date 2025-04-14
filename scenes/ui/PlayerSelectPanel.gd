@@ -74,8 +74,13 @@ func _resize_icon(texture: Texture2D, size: Vector2) -> Texture2D:
 	image.resize(size.x, size.y, Image.INTERPOLATE_LANCZOS)
 	return ImageTexture.create_from_image(image)
 
-func get_player_data() -> Dictionary:
-	return {
-		"name": name_field.text.strip_edges(),
-		"strategems": selected_stratagems.duplicate()
-	}
+func get_player_data() -> Player:
+	var player = Player.new()
+	player.name = name_field.text
+
+	# Safely fill the stratagems list without reassigning
+	player.stratagems.clear()
+	for strat in selected_stratagems:
+		player.stratagems.append(strat.duplicate(true))  # Deep copy
+
+	return player

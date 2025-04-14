@@ -27,32 +27,32 @@ func _create_debug_players():
 	player1.name = "Debug Alice"
 	player1.health = 100
 	player1.weapon = "Liberator"
-	player1.stratagems = [strat_1, strat_2, strat_3, strat_4]
 	player1.current_place = 0
+	player1.stratagems.append_array([strat_1, strat_2, strat_3, strat_4])
 	add_player(player1)
 
 	var player2 = Player.new()
 	player2.name = "Debug Bob"
 	player2.health = 100
 	player2.weapon = "Liberator"
-	player2.stratagems = [strat_2, strat_4, strat_1, strat_3]
 	player2.current_place = 0
+	player2.stratagems.append_array([strat_2, strat_4, strat_1, strat_3])
 	add_player(player2)
 
 	var player3 = Player.new()
 	player3.name = "Debug Garreth"
 	player3.health = 100
 	player3.weapon = "Liberator"
-	player3.stratagems = [strat_5, strat_6, strat_7, strat_8]
 	player3.current_place = 0
+	player3.stratagems.append_array([strat_5, strat_6, strat_7, strat_8])
 	add_player(player3)
 
 	var player4 = Player.new()
 	player4.name = "Debug Melissa"
 	player4.health = 100
 	player4.weapon = "Liberator"
-	player4.stratagems = [strat_1, strat_6, strat_7, strat_8]
 	player4.current_place = 0
+	player4.stratagems.append_array([strat_1, strat_6, strat_7, strat_8])
 	add_player(player4)
 
 func add_player(player: Player) -> void:

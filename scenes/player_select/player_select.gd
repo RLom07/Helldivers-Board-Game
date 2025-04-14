@@ -79,7 +79,7 @@ func _on_confirm_pressed():
 			player.name = data.name
 			player.health = 100
 			player.weapon = "Liberator"
-			player.stratagems = data.strategems
+			player.stratagems = data.stratagems
 			player.current_place = 0
 
 			PlayerManager.add_player(player)

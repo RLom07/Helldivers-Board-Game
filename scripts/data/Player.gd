@@ -1,12 +1,12 @@
 extends Resource
 class_name Player
 
-var name: String = ""
-var health: int = 100
-var weapon: String = "Liberator"
-var stratagems: Array = []
-var current_place: int = 1
-var reinforce_used := false
-var stims: int = 3
-var is_dead: bool = false
-var stratagem_cooldowns := {}
+@export var name: String = ""
+@export var health: int = 100
+@export var weapon: String = "Liberator"
+@export var stratagems: Array[Stratagem] = []
+@export var current_place: int = 1
+@export var reinforce_used := false
+@export var stims: int = 3
+@export var is_dead: bool = false
+@export var stratagem_cooldowns := {}
