@@ -1,10 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://kkpfq8gssqu3"]
+[gd_scene load_steps=3 format=3 uid="uid://kkpfq8gssqu3"]
 
 [ext_resource type="VideoStream" path="res://assets/video's/algemeen/Citizenship-Classification-Structure-Super-Destroyer-War-Ad-Propaganda-Helldivers-2.ogv" id="1_20hs0"]
+[ext_resource type="Script" path="res://scenes/endScene/EndScene.gd" id="1_g3iws"]
 
 [node name="EndScene" type="Control"]
 layout_mode = 3
 anchors_preset = 0
+script = ExtResource("1_g3iws")
 
 [node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="."]
 layout_mode = 0
