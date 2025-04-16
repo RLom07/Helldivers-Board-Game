@@ -18,7 +18,12 @@ autoplay = true
 [node name="SkipLabel" type="Label" parent="."]
 visible = false
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
+offset_left = 1454.0
+offset_top = 992.0
+offset_right = 1901.0
+offset_bottom = 1061.0
+theme_override_font_sizes/font_size = 50
+text = "Press Enter to skip"
 
 [node name="BlinkTimer" type="Timer" parent="."]
+wait_time = 0.5

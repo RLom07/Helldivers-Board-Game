@@ -1,0 +1,59 @@
+[gd_scene load_steps=3 format=3 uid="uid://bmq81u3w4nfkp"]
+
+[ext_resource type="Script" path="res://scenes/ui/MissionDisplay.gd" id="1_ohvgd"]
+[ext_resource type="Texture2D" uid="uid://doyw1x000mfn3" path="res://assets/images/stratagems/Rectangle 44.png" id="2_j5b2i"]
+
+[node name="MissionDisplay" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_ohvgd")
+
+[node name="background" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 472.0
+offset_top = 256.0
+offset_right = 1328.0
+offset_bottom = 698.0
+texture = ExtResource("2_j5b2i")
+expand_mode = 1
+
+[node name="TitleLabel" type="Label" parent="background"]
+layout_mode = 0
+offset_left = 163.0
+offset_top = 11.0
+offset_right = 590.0
+offset_bottom = 66.0
+theme_override_font_sizes/font_size = 40
+text = "Evacuate The Super Citizens!"
+
+[node name="MissionInfo" type="Label" parent="background"]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 99.0
+offset_right = 829.0
+offset_bottom = 200.0
+theme_override_font_sizes/font_size = 35
+text = "You have arrived at the spot where the Super
+Citizens are hiding. Evacuate them!"
+horizontal_alignment = 1
+
+[node name="OutcomeLabel" type="Label" parent="background"]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 240.0
+offset_right = 847.0
+offset_bottom = 341.0
+theme_override_font_sizes/font_size = 35
+text = "Stay on this Tile until the all the Super Citizens 
+Have successfully escaped. Don't get blown away"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="CloseButton" type="Button" parent="background"]
+layout_mode = 0
+offset_left = 351.0
+offset_top = 344.0
+offset_right = 491.0
+offset_bottom = 394.0
+theme_override_font_sizes/font_size = 30
+text = "Continue"

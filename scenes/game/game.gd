@@ -163,7 +163,7 @@ func _on_token_gui_input(event: InputEvent, index: int) -> void:
 
 			_update_turn()
 
-		# 🔁 Reset visual hover effects
+		# Reset visual hover effects
 		for i in range(tokens.size()):
 			var tok = tokens[i]
 			if preview_tweens.has(tok):
@@ -192,10 +192,10 @@ func _apply_stratagem_to_tiles(strat, tiles: Array):
 		audio.play()
 		audio.connect("finished", Callable(audio, "queue_free"))
 
-	# 📦 Run the stratagem’s logic
+	# Run the stratagem’s logic
 	var result = strat.process_attack(tiles as Array[int], players, enemy_tile_map)
 
-	# 💥 Friendly fire damage
+	# Friendly fire damage
 	for tile_index in tiles:
 		for player in players:
 			if player.current_place == tile_index and not player.is_dead:
@@ -207,7 +207,7 @@ func _apply_stratagem_to_tiles(strat, tiles: Array):
 				if players[current_player_index] == player:
 					update_health(player.health)
 
-	# 💀 Enemy defeat visuals (including hidden ones)
+	# Enemy defeat visuals
 	for tile_index in tiles:
 		if enemy_tile_map.has(tile_index):
 			var enemy: Enemy = enemy_tile_map[tile_index]
@@ -220,7 +220,7 @@ func _apply_stratagem_to_tiles(strat, tiles: Array):
 					token.visible = true  # Show token even if it was hidden
 					token.modulate.a = 0.6  # Set opacity to 60% to indicate defeat
 
-	# 💬 Show result popup
+	# Show result popup
 	_show_stratagem_impact(result["hidden_hits"], result["revealed_hit_names"])
 
 
@@ -267,7 +267,7 @@ func _render_players():
 		var color = Color.LIGHT_GREEN if i == current_player_index else Color.WHITE
 		var label = _create_label(players[i].name, 30, color)
 		if players[i].is_dead:
-			label.modulate.a = 0.5  # 50% opacity
+			label.modulate.a = 0.5  
 
 		player_list.add_child(label)
 		var spacer = Control.new()
@@ -371,7 +371,7 @@ func _toggle_stratagem(strat, button: TextureButton):
 			print("🚫", player.name, "has already used Reinforce.")
 			return
 		_show_reinforce_menu(player)
-		# ❌ Don't set reinforce_used here
+		# Don't set reinforce_used here
 	else:
 		selected_stratagem = strat
 		selected_strat_button = button
@@ -467,16 +467,16 @@ func _on_next_turn_pressed():
 			break
 		attempts += 1
 
-	# ✅ Check if all Helldivers are dead
+	# Check if all Helldivers are dead
 	if players.all(func(p): return p.is_dead):
 		_handle_game_over_all_dead()
 		return
 
-	# ✅ Show extraction countdown if it's the activating player's turn
+	# Show extraction countdown if it's the activating player's turn
 	if extraction_active and players[current_player_index] == extraction_triggered_by:
 		_show_extraction_countdown()
 
-	# ✅ Volledige ronde afgelopen
+	# Volledige ronde afgelopen
 	if current_player_index < previous_index or (current_player_index == 0 and previous_index == total_players - 1):
 		print("🔁 Full round completed! Decreasing cooldowns...")
 
@@ -489,13 +489,13 @@ func _on_next_turn_pressed():
 				_handle_extraction_end()
 				return  # Stop further turn progression
 
-		# 🔃 Cooldowns
+		# Cooldowns
 		for player in players:
 			for strat in player.stratagems:
 				if strat.cooldown_counter > 0:
 					strat.cooldown_counter -= 1
 
-		# ✅ Missie-aanval: als missie actief is en spelers op de tegel staan
+		# Missie-aanval: als missie actief is en spelers op de tegel staan
 		if not mission_complete:
 			var players_on_tile := players.filter(func(p): return p.current_place == mission_tile_index and not p.is_dead)
 
@@ -585,7 +585,7 @@ func _on_flight_result(success: bool, enemy: Enemy, player: Player, tile_index: 
 		var safe_tile = _find_safe_tile()
 		player.current_place = safe_tile
 
-		# 🔁 FULL HOVER/PULSE RESET (tokens + enemy_tokens)
+		# FULL HOVER/PULSE RESET (tokens + enemy_tokens)
 		for i in range(tokens.size()):
 			var tok = tokens[i]
 			if preview_tweens.has(tok):
@@ -637,11 +637,11 @@ func _find_safe_tile() -> int:
 	for i in range(tokens.size()):
 		if not enemy_tile_map.has(i):
 			return i
-	return 0  # fallback
+	return 0  
 
 func _show_enemy_encounter(enemy: Enemy):
 	var scene_path := ""
-	match String(enemy.name):  # <-- 🔧 This fixes your mission combat bug!
+	match String(enemy.name):
 		"Annihilator Tank":
 			scene_path = "res://scenes/ui/TankEncounter.tscn"
 		"Commissar":
@@ -690,7 +690,7 @@ func _on_dice_roll_result(damage: int, enemy: Enemy, tile_index: int) -> void:
 		print("💀", enemy.name, "defeated!")
 
 
-	# Check if player died (e.g., from previous attack or special logic)
+	# Check if player died
 	if player.health <= 0:
 		player.is_dead = true
 		print("💀", player.name, "has died!")
@@ -725,7 +725,7 @@ func _show_combat_result(damage: int, is_defeated: bool, enemy: Enemy, tile_inde
 var mission_enemies: Array = []
 
 func _create_enemies():
-	# Tanks (already done correctly)
+	# Tanks 
 	var tank1 = Enemy.new()
 	tank1.name = "Annihilator Tank"
 	tank1.health = 150
@@ -830,7 +830,7 @@ func _create_enemies():
 	marauder2.weakness = "Explosive"
 	marauder2.resistance = "Electric"
 	
-	# === ADD MISSION-ONLY ENEMIES ===
+	# Mission Enemies
 	var mission_commissar1 = Enemy.new()
 	mission_commissar1.name = "Commissar"
 	mission_commissar1.health = 180
@@ -873,7 +873,7 @@ func _create_enemies():
 	mission_marauder2.weakness = "Explosive"
 	mission_marauder2.resistance = "Electric"
 
-	# Add to enemy list (for debug/statistics)
+	# Add to enemy list 
 	enemies.append_array([
 		tank1, tank2,
 		commissar1, commissar2,
@@ -923,13 +923,13 @@ func reinforce_player(from_player: Player, to_player: Player):
 		print(to_player.name, "is not dead!")
 		return
 
-	# ✅ Play voice line
+	# Play voice line
 	var audio = AudioStreamPlayer.new()
 	audio.stream = preload("res://assets/voice_lines/Reinforcementslauched.mp3")
 	add_child(audio)
 	audio.play()
 
-	# ✅ Revive logic
+	# Revive logic
 	to_player.is_dead = false
 	from_player.reinforce_used = true
 	to_player.health = 100
@@ -950,7 +950,7 @@ func _show_reinforce_menu(from_player: Player):
 		print("🛡️ No dead players to reinforce.")
 		return
 
-	# ✅ Correct way to connect signal
+	# Correct way to connect signal
 	popup.connect("id_pressed", Callable(self, "_on_reinforce_selected").bind(from_player, popup))
 
 	add_child(popup)
@@ -992,7 +992,13 @@ func _check_mission_tile_logic(player: Player):
 			mission_player = player
 			mission_turns_remaining = 3
 			print("🛟", player.name, "started the evacuation mission!")
+
+			var scene = preload("res://scenes/ui/MissionDisplay.tscn")
+			var instance = scene.instantiate()
+			add_child(instance)
+
 			_play_voice_line("res://assets/voice_lines/Important personnel - Sweet liberty, its the helldivers.mp3")
+
 
 		elif player == mission_player:
 			mission_turns_remaining -= 1
@@ -1086,42 +1092,36 @@ func _handle_extraction_end():
 	add_child(voice)
 	voice.play()
 
-	# 🕒 Wait 8 more seconds (14 total), then change scene
+	# Wait 8 more seconds (14 total), then change scene
 	await get_tree().create_timer(8.0).timeout
 	get_tree().change_scene_to_file("res://scenes/endScene/EndScene.tscn")  # ← update if you use a different path
 
 func _handle_game_over_all_dead():
 	print("☠️ All Helldivers are dead. Mission failed.")
 
-	# 🔇 Stop all current music
+	# Stop all current music
 	for node in get_children():
 		if node is AudioStreamPlayer and node.playing:
 			node.stop()
 
-	# 🎵 Play Game Over music
+	# Play Game Over music
 	var music = AudioStreamPlayer.new()
 	music.stream = preload("res://assets/music/automatons/# Relaxed background music - Automaton.mp3")
 	add_child(music)
 	music.play()
 
-	# 🗣️ After 2 seconds: play voice line
+	# After 2 seconds: play voice line
 	await get_tree().create_timer(2).timeout
 	var voice = AudioStreamPlayer.new()
 	voice.stream = preload("res://assets/voice_lines/Democracy officer - Our heroes have fallen, but their bodies shall be replaced and their losses restored (1).mp3")
 	add_child(voice)
 	voice.play()
 
-	# ⏭️ After 8 more seconds: go to GameOver scene
+	# After 8 more seconds: go to GameOver scene
 	await get_tree().create_timer(8).timeout
 	get_tree().change_scene_to_file("res://scenes/gameOver/Gameover.tscn")
 
-# Stratagem voice lines
+# Stratagem voice lines (not  finished sadly)
 var stratagem_voice_lines := {
-	"Eagle Bullet Rain": "res://assets/voice_lines/Stratagem_EagleBulletRain.mp3",
-	"Orbital Laser": "res://assets/voice_lines/Stratagem_OrbitalLaser.mp3",
-	"Rocket Sentry": "res://assets/voice_lines/Stratagem_RocketSentry.mp3",
-	"Mortar Turret": "res://assets/voice_lines/Stratagem_MortarTurret.mp3",
-	"Stun Grenade": "res://assets/voice_lines/Stratagem_StunGrenade.mp3",
-	"Scan": "res://assets/voice_lines/Stratagem_Scan.mp3",
-	"Shredder Minefield": "res://assets/voice_lines/Stratagem_Minefield.mp3"
+	"Eagle Bullet Rain": "#"
 }

@@ -14,3 +14,16 @@ offset_right = 1920.0
 offset_bottom = 1080.0
 stream = ExtResource("1_20hs0")
 autoplay = true
+
+[node name="SkipLabel" type="Label" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 1455.0
+offset_top = 980.0
+offset_right = 1902.0
+offset_bottom = 1049.0
+theme_override_font_sizes/font_size = 50
+text = "Press Enter to skip"
+
+[node name="BlinkTimer" type="Timer" parent="."]
+wait_time = 0.5
