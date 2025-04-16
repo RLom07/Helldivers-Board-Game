@@ -129,15 +129,13 @@ func _on_token_gui_input(event: InputEvent, index: int) -> void:
 				var affected = _get_affected_tiles(selected_stratagem, target_tile)
 				if selected_stratagem.type == "Scan":
 					for i in affected:
-						if i != mission_tile_index and i != extraction_tile_index:
+						if i != mission_tile_index and i != extraction_tile_index and enemy_tile_map.has(i):
 							_fade_out_token(tokens[i])
-
 				else:
 					_apply_stratagem_to_tiles(selected_stratagem, affected)
 
 				print("💣 Tile", target_tile + 1, "hit by", selected_stratagem.name)
 
-				# Set cooldown AFTER use
 				if selected_stratagem.name != "Reinforce":
 					selected_stratagem.cooldown_counter = selected_stratagem.cooldown
 
@@ -146,23 +144,24 @@ func _on_token_gui_input(event: InputEvent, index: int) -> void:
 			else:
 				print("❌ Out of range")
 		else:
-			# No stratagem selected: Move the player
 			player.current_place = index
 
 			if enemy_tokens.has(index):
 				var enemy_token = enemy_tokens[index]
 				enemy_token.visible = true
-				_fade_out_token(tokens[index])
+				if enemy_tile_map.has(index):
+					_fade_out_token(tokens[index])
+
 				var enemy: Enemy = enemy_tile_map.get(index, null)
 				if enemy and not enemy.isdefeated:
 					await get_tree().create_timer(2.0).timeout
 					_show_enemy_encounter(enemy)
 			else:
-				if index != mission_tile_index and index != extraction_tile_index:
+				# Do not fade out token unless it has an enemy
+				if index != mission_tile_index and index != extraction_tile_index and enemy_tile_map.has(index):
 					_fade_out_token(tokens[index])
 
 			_update_turn()
-
 
 		# 🔁 Reset visual hover effects
 		for i in range(tokens.size()):
@@ -185,9 +184,18 @@ func _apply_stratagem_to_tiles(strat, tiles: Array):
 	if strat.type == "Scan" or strat.name == "Reinforce":
 		return
 
+	# ▶️ Play stratagem voice line if it exists
+	if strat.name in stratagem_voice_lines:
+		var audio := AudioStreamPlayer.new()
+		audio.stream = load(stratagem_voice_lines[strat.name])
+		add_child(audio)
+		audio.play()
+		audio.connect("finished", Callable(audio, "queue_free"))
+
+	# 📦 Run the stratagem’s logic
 	var result = strat.process_attack(tiles as Array[int], players, enemy_tile_map)
 
-	# Apply friendly fire damage to players on affected tiles
+	# 💥 Friendly fire damage
 	for tile_index in tiles:
 		for player in players:
 			if player.current_place == tile_index and not player.is_dead:
@@ -199,13 +207,20 @@ func _apply_stratagem_to_tiles(strat, tiles: Array):
 				if players[current_player_index] == player:
 					update_health(player.health)
 
-	# Update visuals and defeated tokens
-	for i in result["defeated_tiles"]:
-		if enemy_tokens.has(i):
-			var token = enemy_tokens[i]
-			token.visible = true
-			token.modulate.a = 0.6
+	# 💀 Enemy defeat visuals (including hidden ones)
+	for tile_index in tiles:
+		if enemy_tile_map.has(tile_index):
+			var enemy: Enemy = enemy_tile_map[tile_index]
+			if enemy.health <= 0 and not enemy.isdefeated:
+				enemy.isdefeated = true
+				print("💀", enemy.name, "was defeated by", strat.name, "on tile", tile_index + 1)
 
+				if enemy_tokens.has(tile_index):
+					var token: TextureRect = enemy_tokens[tile_index]
+					token.visible = true  # Show token even if it was hidden
+					token.modulate.a = 0.6  # Set opacity to 60% to indicate defeat
+
+	# 💬 Show result popup
 	_show_stratagem_impact(result["hidden_hits"], result["revealed_hit_names"])
 
 
@@ -1051,14 +1066,6 @@ func _handle_extraction_end():
 	var message := "✅ Extraction Success!\n\nEscaped:\n" + str(escaped_players) + "\n\nLeft Behind:\n" + str(left_behind_players)
 	print(message)
 
-	# Optional: show message on screen while the music and voice play
-	var label = _create_label(message, 24, Color.WHITE)
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	add_child(label)
-
 	next_turn_button.disabled = true  # Freeze game input
 
 	# 🎵 Stop any currently playing music
@@ -1107,3 +1114,14 @@ func _handle_game_over_all_dead():
 	# ⏭️ After 8 more seconds: go to GameOver scene
 	await get_tree().create_timer(8).timeout
 	get_tree().change_scene_to_file("res://scenes/gameOver/Gameover.tscn")
+
+# Stratagem voice lines
+var stratagem_voice_lines := {
+	"Eagle Bullet Rain": "res://assets/voice_lines/Stratagem_EagleBulletRain.mp3",
+	"Orbital Laser": "res://assets/voice_lines/Stratagem_OrbitalLaser.mp3",
+	"Rocket Sentry": "res://assets/voice_lines/Stratagem_RocketSentry.mp3",
+	"Mortar Turret": "res://assets/voice_lines/Stratagem_MortarTurret.mp3",
+	"Stun Grenade": "res://assets/voice_lines/Stratagem_StunGrenade.mp3",
+	"Scan": "res://assets/voice_lines/Stratagem_Scan.mp3",
+	"Shredder Minefield": "res://assets/voice_lines/Stratagem_Minefield.mp3"
+}

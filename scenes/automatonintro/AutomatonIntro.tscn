@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://dm1uu0545ngut"]
+[gd_scene load_steps=3 format=3 uid="uid://cq13uxywucgh4"]
 
 [ext_resource type="VideoStream" path="res://assets/video's/automatons/Coretta-Kelly-Broadcast-Cyberstan-Invasion-Strohmann-News.ogv" id="1_gitub"]
 [ext_resource type="Script" path="res://scenes/automatonintro/automaton_intro.gd" id="1_m4iej"]
@@ -10,7 +10,15 @@ script = ExtResource("1_m4iej")
 
 [node name="VideoPlayer" type="VideoStreamPlayer" parent="."]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 1920.0
+offset_bottom = 1080.0
 stream = ExtResource("1_gitub")
 autoplay = true
+
+[node name="SkipLabel" type="Label" parent="."]
+visible = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="BlinkTimer" type="Timer" parent="."]

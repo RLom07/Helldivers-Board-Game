@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://cbwlu1usr8jqr"]
 
 [ext_resource type="Script" path="res://scenes/beginscherm/StartScreenControl.gd" id="1_mhqs2"]
-[ext_resource type="Texture2D" uid="uid://bwumrpw57eurj" path="res://assets/images/menu/menu.jpg" id="1_xelfu"]
 [ext_resource type="AudioStream" uid="uid://cscwkhchddxm7" path="res://assets/music/algemeen/athem.wav" id="2_1smls"]
+[ext_resource type="Texture2D" uid="uid://bn5vm7jhys52v" path="res://assets/images/game/20250410_1031_Helldivers Boardgame Concept_remix_01jrfd3vj4f26tw4an6yajhcpk.png" id="2_ldk2f"]
 
 [sub_resource type="Animation" id="Animation_lw80y"]
 length = 0.001
@@ -54,17 +54,17 @@ layout_mode = 0
 offset_top = 1.0
 offset_right = 1920.0
 offset_bottom = 1080.0
-texture = ExtResource("1_xelfu")
+texture = ExtResource("2_ldk2f")
 expand_mode = 1
 
 [node name="Label" type="Label" parent="Control"]
 layout_mode = 0
-offset_left = 701.0
+offset_left = 546.0
 offset_top = 945.0
-offset_right = 1264.0
+offset_right = 1462.0
 offset_bottom = 1041.0
 theme_override_font_sizes/font_size = 70
-text = "Click to continue"
+text = "Press a button to continue"
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Control"]
 stream = ExtResource("2_1smls")
@@ -77,8 +77,10 @@ libraries = {
 
 [node name="FadeRect" type="ColorRect" parent="Control"]
 layout_mode = 0
-offset_right = 1920.0
-offset_bottom = 1104.0
+offset_left = 36.0
+offset_top = -5.0
+offset_right = 1956.0
+offset_bottom = 1099.0
 mouse_filter = 2
 mouse_force_pass_scroll_events = false
 color = Color(0, 0, 0, 0)

@@ -26,7 +26,3 @@ func skip_intro():
 
 func _on_BlinkTimer_timeout():
 	skip_label.visible = !skip_label.visible
-
-
-func _on_blink_timer_timeout() -> void:
-	pass # Replace with function body.

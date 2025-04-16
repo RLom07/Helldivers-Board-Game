@@ -10,10 +10,7 @@ const PlayerSelectPanel = preload("res://scenes/ui/PlayerSelectPanel.gd")
 @onready var add_button_3 = $MarginContainer/VBoxContainer/PlayerRow/Addbutton3
 
 var all_stratagems: Array[Stratagem] = [
-	preload("res://scripts/data/stratagems/Napalm.tres"),
 	preload("res://scripts/data/stratagems/Orbital Barage.tres"),
-	preload("res://scripts/data/stratagems/Napalm Eagle.tres"),
-	preload("res://scripts/data/stratagems/Smoke Eagle.tres"),
 	preload("res://scripts/data/stratagems/Orbital Scan.tres"),
 	preload("res://scripts/data/stratagems/Eagle Bullet Rain.tres"),
 	preload("res://scripts/data/stratagems/Eagle Drone.tres"),

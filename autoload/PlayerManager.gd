@@ -14,14 +14,11 @@ func _ready():
 func _create_debug_players():
 	clear_players()
 
-	var strat_1 = preload("res://scripts/data/stratagems/Napalm.tres")
-	var strat_2 = preload("res://scripts/data/stratagems/Orbital Barage.tres")
-	var strat_3 = preload("res://scripts/data/stratagems/Smoke Eagle.tres")
-	var strat_4 = preload("res://scripts/data/stratagems/Eagle Drone.tres")
-	var strat_5 = preload("res://scripts/data/stratagems/Orbital Scan.tres")
-	var strat_6 = preload("res://scripts/data/stratagems/Orbital Nuke.tres")
-	var strat_7 = preload("res://scripts/data/stratagems/Eagle Bullet Rain.tres")
-	var strat_8 = preload("res://scripts/data/stratagems/Napalm Eagle.tres")
+	var strat_1 = preload("res://scripts/data/stratagems/Orbital Barage.tres")
+	var strat_2 = preload("res://scripts/data/stratagems/Eagle Drone.tres")
+	var strat_3 = preload("res://scripts/data/stratagems/Orbital Scan.tres")
+	var strat_4 = preload("res://scripts/data/stratagems/Orbital Nuke.tres")
+	var strat_5 = preload("res://scripts/data/stratagems/Eagle Bullet Rain.tres")
 
 	var player1 = Player.new()
 	player1.name = "Debug Alice"
@@ -44,7 +41,7 @@ func _create_debug_players():
 	player3.health = 100
 	player3.weapon = "Liberator"
 	player3.current_place = 0
-	player3.stratagems.append_array([strat_5, strat_6, strat_7, strat_8])
+	player3.stratagems.append_array([strat_1, strat_2, strat_3, strat_4])
 	add_player(player3)
 
 	var player4 = Player.new()
@@ -52,7 +49,7 @@ func _create_debug_players():
 	player4.health = 100
 	player4.weapon = "Liberator"
 	player4.current_place = 0
-	player4.stratagems.append_array([strat_1, strat_6, strat_7, strat_8])
+	player4.stratagems.append_array([strat_2, strat_3, strat_4, strat_5])
 	add_player(player4)
 
 func add_player(player: Player) -> void:

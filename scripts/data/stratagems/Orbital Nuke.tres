@@ -7,8 +7,11 @@
 script = ExtResource("1_vy3jd")
 name = "Orbital Nuke"
 description = "A huge blast with a range of 3 spots to the forward and backward"
-cooldown = 7
-damage = 50
+cooldown = 5
+damage = 60
 icon = ExtResource("1_j2ci7")
 type = "explosive"
 range = 5
+blast_radius = 4
+area_impact = 0
+blast_forward = 0
