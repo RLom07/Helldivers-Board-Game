@@ -18,6 +18,7 @@ autoplay = true
 
 [node name="SkipLabel" type="Label" parent="."]
 visible = false
+layout_mode = 0
 offset_left = 1456.0
 offset_top = 995.0
 offset_right = 1903.0

@@ -105,8 +105,6 @@ func _on_token_mouse_entered(index: int) -> void:
 	if enemy_tokens.has(index) and not tokens[index].visible:
 		token = enemy_tokens[index]
 
-
-
 	if selected_stratagem:
 		_preview_tile_target(index)
 	else:
@@ -184,7 +182,7 @@ func _apply_stratagem_to_tiles(strat, tiles: Array):
 	if strat.type == "Scan" or strat.name == "Reinforce":
 		return
 
-	# ▶️ Play stratagem voice line if it exists
+	# Play stratagem voice line if it exists
 	if strat.name in stratagem_voice_lines:
 		var audio := AudioStreamPlayer.new()
 		audio.stream = load(stratagem_voice_lines[strat.name])
@@ -728,150 +726,148 @@ func _create_enemies():
 	# Tanks 
 	var tank1 = Enemy.new()
 	tank1.name = "Annihilator Tank"
-	tank1.health = 150
+	tank1.health = 350
 	tank1.attacks = [
 		{ "name": "Cannon Blast", "damage": 40, "description": "Fires a powerful cannon round at a target." },
 		{ "name": "Missile Barrage", "damage": 25, "description": "Launches a barrage of guided missiles." }
 	]
-	tank1.weakness = "EMP"
-	tank1.resistance = "Explosive"
+	tank1.weakness = "explosion"
+	tank1.resistance = "bullet"
 
 	var tank2 = Enemy.new()
 	tank2.name = "Annihilator Tank"
-	tank2.health = 150
+	tank2.health = 350
 	tank2.attacks = [
 		{ "name": "Cannon Blast", "damage": 40, "description": "Fires a powerful cannon round at a target." },
 		{ "name": "Missile Barrage", "damage": 25, "description": "Launches a barrage of guided missiles." }
 	]
-	tank2.weakness = "EMP"
-	tank2.resistance = "Explosive"
+	tank2.weakness = "explosion"
+	tank2.resistance = "bullet"
 
 	# Commissars
 	var commissar1 = Enemy.new()
 	commissar1.name = "Commissar"
-	commissar1.health = 180
+	commissar1.health = 100
 	commissar1.attacks = [
-		{ "name": "Inspiring Shot", "damage": 20, "description": "Shoots while boosting nearby allies." },
-		{ "name": "Suppressive Fire", "damage": 15, "description": "Lays down suppressing fire in an area." }
+		{ "name": "Inspiring Shot", "damage": 25, "description": "Shoots while boosting nearby allies." },
+		{ "name": "Suppressive Fire", "damage": 15, "description": "Lays down suppressing fire in an area." },
+		{ "name": "Quick Stab", "damage": 20, "description": "Stabs quickly with sharp blades." }
 	]
-	commissar1.weakness = "Fire"
-	commissar1.resistance = "Piercing"
+	commissar1.weakness = "bullet"
+	commissar1.resistance = ""
 
 	var commissar2 = Enemy.new()
 	commissar2.name = "Commissar"
-	commissar2.health = 180
+	commissar2.health = 100
 	commissar2.attacks = [
-		{ "name": "Inspiring Shot", "damage": 20, "description": "Shoots while boosting nearby allies." },
-		{ "name": "Suppressive Fire", "damage": 15, "description": "Lays down suppressing fire in an area." }
+		{ "name": "Inspiring Shot", "damage": 25, "description": "Shoots while boosting nearby allies." },
+		{ "name": "Suppressive Fire", "damage": 15, "description": "Lays down suppressing fire in an area." },
+		{ "name": "Quick Stab", "damage": 20, "description": "Stabs quickly with sharp blades." }
 	]
-	commissar2.weakness = "Fire"
-	commissar2.resistance = "Piercing"
+	commissar2.weakness = "bullet"
+	commissar2.resistance = ""
 
 	# Devastators
 	var devastator1 = Enemy.new()
 	devastator1.name = "Devastator"
-	devastator1.health = 250
+	devastator1.health = 200
 	devastator1.attacks = [
-		{ "name": "Laser Beam", "damage": 35, "description": "Shoots a high-energy laser." },
 		{ "name": "Shockwave Slam", "damage": 30, "description": "Slams the ground to create a damaging shockwave." }
 	]
-	devastator1.weakness = "Electric"
-	devastator1.resistance = "Fire"
+	devastator1.weakness = "explosion"
+	devastator1.resistance = ""
 
 	var devastator2 = Enemy.new()
 	devastator2.name = "Devastator"
-	devastator2.health = 250
+	devastator2.health = 200
 	devastator2.attacks = [
-		{ "name": "Laser Beam", "damage": 35, "description": "Shoots a high-energy laser." },
 		{ "name": "Shockwave Slam", "damage": 30, "description": "Slams the ground to create a damaging shockwave." }
 	]
-	devastator2.weakness = "Electric"
-	devastator2.resistance = "Fire"
+	devastator2.weakness = "explosion"
+	devastator2.resistance = ""
 
 	# Hulks
 	var hulk1 = Enemy.new()
 	hulk1.name = "Hulk"
-	hulk1.health = 400
+	hulk1.health = 250
 	hulk1.attacks = [
 		{ "name": "Smash", "damage": 45, "description": "Brings down a massive fist on its target." },
 		{ "name": "Grab and Throw", "damage": 30, "description": "Grabs a player and throws them." }
 	]
-	hulk1.weakness = "Piercing"
-	hulk1.resistance = "Blunt"
+	hulk1.weakness = "nuke"
+	hulk1.resistance = "bullet"
 
 	var hulk2 = Enemy.new()
 	hulk2.name = "Hulk"
-	hulk2.health = 400
+	hulk2.health = 250
 	hulk2.attacks = [
 		{ "name": "Smash", "damage": 45, "description": "Brings down a massive fist on its target." },
 		{ "name": "Grab and Throw", "damage": 30, "description": "Grabs a player and throws them." }
 	]
-	hulk2.weakness = "Piercing"
-	hulk2.resistance = "Blunt"
+	hulk2.weakness = "nuke"
+	hulk2.resistance = "bullet"
 
 	# Marauders
 	var marauder1 = Enemy.new()
 	marauder1.name = "Marauder"
-	marauder1.health = 150
+	marauder1.health = 120
 	marauder1.attacks = [
-		{ "name": "Quick Stab", "damage": 20, "description": "Stabs quickly with sharp blades." },
-		{ "name": "Poison Dart", "damage": 10, "description": "Fires a dart that poisons the target." }
+		{ "name": "Quick Stab", "damage": 20, "description": "Stabs quickly with sharp blades." }
 	]
-	marauder1.weakness = "Explosive"
-	marauder1.resistance = "Electric"
+	marauder1.weakness = "bullet"
+	marauder1.resistance = ""
 
 	var marauder2 = Enemy.new()
 	marauder2.name = "Marauder"
-	marauder2.health = 150
+	marauder2.health = 120
 	marauder2.attacks = [
-		{ "name": "Quick Stab", "damage": 20, "description": "Stabs quickly with sharp blades." },
-		{ "name": "Poison Dart", "damage": 10, "description": "Fires a dart that poisons the target." }
+		{ "name": "Quick Stab", "damage": 20, "description": "Stabs quickly with sharp blades." }
 	]
-	marauder2.weakness = "Explosive"
-	marauder2.resistance = "Electric"
+	marauder2.weakness = "bullet"
+	marauder2.resistance = ""
 	
 	# Mission Enemies
 	var mission_commissar1 = Enemy.new()
 	mission_commissar1.name = "Commissar"
-	mission_commissar1.health = 180
+	mission_commissar1.health = 100
 	mission_commissar1.attacks = commissar1.attacks.duplicate()
-	mission_commissar1.weakness = "Fire"
-	mission_commissar1.resistance = "Piercing"
+	mission_commissar1.weakness = "bullet"
+	mission_commissar1.resistance = ""
 
 	var mission_commissar2 = Enemy.new()
 	mission_commissar2.name = "Commissar"
-	mission_commissar2.health = 180
+	mission_commissar2.health = 100
 	mission_commissar2.attacks = commissar1.attacks.duplicate()
-	mission_commissar2.weakness = "Fire"
-	mission_commissar2.resistance = "Piercing"
+	mission_commissar2.weakness = "bullet"
+	mission_commissar2.resistance = ""
 
 	var mission_devastator1 = Enemy.new()
 	mission_devastator1.name = "Devastator"
 	mission_devastator1.health = 250
 	mission_devastator1.attacks = devastator1.attacks.duplicate()
-	mission_devastator1.weakness = "Electric"
-	mission_devastator1.resistance = "Fire"
+	mission_devastator1.weakness = "explosion"
+	mission_devastator1.resistance = ""
 
 	var mission_devastator2 = Enemy.new()
 	mission_devastator2.name = "Devastator"
 	mission_devastator2.health = 250
 	mission_devastator2.attacks = devastator1.attacks.duplicate()
-	mission_devastator2.weakness = "Electric"
-	mission_devastator2.resistance = "Fire"
+	mission_devastator2.weakness = "explosion"
+	mission_devastator2.resistance = ""
 
 	var mission_marauder1 = Enemy.new()
 	mission_marauder1.name = "Marauder"
 	mission_marauder1.health = 150
 	mission_marauder1.attacks = marauder1.attacks.duplicate()
-	mission_marauder1.weakness = "Explosive"
-	mission_marauder1.resistance = "Electric"
+	mission_marauder1.weakness = "bullet"
+	mission_marauder1.resistance = ""
 
 	var mission_marauder2 = Enemy.new()
 	mission_marauder2.name = "Marauder"
 	mission_marauder2.health = 150
 	mission_marauder2.attacks = marauder1.attacks.duplicate()
-	mission_marauder2.weakness = "Explosive"
-	mission_marauder2.resistance = "Electric"
+	mission_marauder2.weakness = "bullet"
+	mission_marauder2.resistance = ""
 
 	# Add to enemy list 
 	enemies.append_array([

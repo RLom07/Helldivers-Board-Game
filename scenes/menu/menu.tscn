@@ -30,6 +30,7 @@ theme_override_font_sizes/font_size = 40
 text = "Main Game"
 
 [node name="TutorialButton" type="Button" parent="Control"]
+visible = false
 layout_mode = 2
 offset_left = 763.0
 offset_top = 581.0
